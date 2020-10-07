@@ -24,7 +24,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         public NotesViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
-            imageView = itemView.findViewById(R.id.imageView);
+//            imageView = itemView.findViewById(R.id.imageView);
             heading = itemView.findViewById(R.id.headingView);
             body = itemView.findViewById(R.id.bodyView);
         }
@@ -47,7 +47,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         NoteItem currentItem = notesList.get(position);
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(currentItem.getColor()));
-        holder.imageView.setImageResource(currentItem.getImageResource());
+//        holder.imageView.setImageResource(currentItem.getImageResource());
         holder.heading.setText(currentItem.getHeading());
         holder.body.setText(currentItem.getBody());
     }
