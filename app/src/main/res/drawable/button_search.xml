@@ -6,13 +6,13 @@
 
             <!-- View background color -->
             <solid
-                android:color="@color/colorButton" >
+                android:color="@color/colorPrimary" >
             </solid>
 
 
             <!-- The radius makes the corners rounded -->
             <corners
-                android:radius="30dp"   >
+                android:radius="15dp"   >
             </corners>
 
         </shape>
