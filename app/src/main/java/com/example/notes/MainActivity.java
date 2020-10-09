@@ -1,19 +1,23 @@
 package com.example.notes;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.opengl.Visibility;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
 
@@ -22,15 +26,17 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     // Used to load individual data sets into recycler rather than loading all at once and giving poor performance.
     private NotesAdapter recyclerAdapter;
-    private RecyclerView.LayoutManager recyclerLayoutManager;
+    private FlexboxLayoutManager recyclerLayoutManager;
+//    private RecyclerView.LayoutManager recyclerLayoutManager;
     ArrayList<NoteItem> notesList;
 
     private LinearLayout searchContainer;
     private EditText searchBar;
+//    private ImageView chooseDelButton;
     private ImageButton deleteButton;
     private ImageButton addButton;
     private ImageButton searchButton;
-    private Button clearButton;
+    private ImageView clearButton;
     private Boolean isDeleting = false;
     private Boolean isSearching = false;
 
@@ -50,17 +56,18 @@ public class MainActivity extends AppCompatActivity {
 
         createNotesList();
         buildRecyclerView();
-        setButtons();
-//        chooseDelButton = NotesAdapter.NotesViewHolder.findViewById(R.id.chooseDelButton);
+        setButtonsEditText();
+
     }
 
-    public void setButtons () {
+    public void setButtonsEditText() {
         deleteButton = findViewById(R.id.delButton);
         addButton = findViewById(R.id.addButton);
         searchContainer = findViewById(R.id.searchContainer);
         searchBar = findViewById(R.id.editSearch);
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
+//        chooseDelButton = findViewById(R.id.chooseDelButton);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 initiateDeletion();
             }
         });
+
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        searchBar.addTextChangedListener(textWatcher);
 
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,23 +125,44 @@ public class MainActivity extends AppCompatActivity {
     public void buildRecyclerView(){
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // keep size of the view the same size no matter number of items
-        recyclerLayoutManager = new GridLayoutManager(this, 2);
+        recyclerLayoutManager = new FlexboxLayoutManager(this, FlexDirection.ROW);
         recyclerAdapter = new NotesAdapter(notesList);
         recyclerView.setLayoutManager(recyclerLayoutManager);
         recyclerView.setAdapter(recyclerAdapter);
 
         recyclerAdapter.setOnItemClickListener(new NotesAdapter.OnItemCLickListener() {
             @Override
-            public void onItemCLick(int position) {
-                changeItem(position, "clicked");
-            }
-
-            @Override
             public void onDeleteClick(int position) {
                 removeItem(position);
             }
+
+            @Override
+            public void onClickNote(int position) {
+                // try to change bg of detail card
+                Log.i("clicked", "Note No. " + position  + " clicked");
+                Intent intent = new Intent(MainActivity.this, NoteDetails.class);
+                intent.putExtra("Note Item", notesList.get(position));
+                startActivity(intent);
+            }
         });
     }
+
+    protected TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            recyclerAdapter.getFilter().filter(s);
+        }
+    };
 
     public String getAppState() {
         return appState;
@@ -156,13 +187,14 @@ public class MainActivity extends AppCompatActivity {
             isDeleting = true;
 
             addButton.setVisibility(View.INVISIBLE);
-//            chooseDelButton.setVisibility(view.INVISIBLE);
+//            chooseDelButton.setVisibility(View.VISIBLE);
             deleteButton.setImageResource(R.drawable.ic_done);
+
         }
         else if (isDeleting){
             isDeleting = false;
             addButton.setVisibility(View.VISIBLE);
-
+//            chooseDelButton.setVisibility(View.INVISIBLE);
             deleteButton.setImageResource(R.drawable.ic_delete);
         }
     }

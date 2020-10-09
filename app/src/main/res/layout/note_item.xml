@@ -6,9 +6,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:foregroundGravity="center"
     android:minWidth="100dp"
     android:padding="10dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    app:layout_flexGrow="1">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,6 +24,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="3dp"
+            android:maxLength="24"
+            android:maxLines="1"
             android:text="Heading"
             android:textColor="@color/textColorPrimary"
             android:textSize="20sp"
@@ -48,10 +55,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginStart="3dp"
-            android:layout_marginLeft="3dp"
             android:layout_marginTop="3dp"
             android:padding="5dp"
             android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/headingView"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_cancel" />

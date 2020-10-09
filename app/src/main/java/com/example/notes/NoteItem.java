@@ -1,6 +1,9 @@
 package com.example.notes;
 
-public class NoteItem {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class NoteItem implements Parcelable {
     private int imageResource;
     private String heading;
     private String body;
@@ -12,6 +15,25 @@ public class NoteItem {
         this.body = body;
         this.color = color;
     }
+
+    protected NoteItem(Parcel in) {
+        imageResource = in.readInt();
+        heading = in.readString();
+        body = in.readString();
+        color = in.readString();
+    }
+
+    public static final Creator<NoteItem> CREATOR = new Creator<NoteItem>() {
+        @Override
+        public NoteItem createFromParcel(Parcel in) {
+            return new NoteItem(in);
+        }
+
+        @Override
+        public NoteItem[] newArray(int size) {
+            return new NoteItem[size];
+        }
+    };
 
     public int getImageResource() {
         return imageResource;
@@ -43,5 +65,18 @@ public class NoteItem {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(imageResource);
+        dest.writeString(heading);
+        dest.writeString(body);
+        dest.writeString(color);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.notes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -22,15 +25,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     // entire list
     private ArrayList<NoteItem> noteListFull;
     private OnItemCLickListener notesListener;
-
-    @Override
-    public Filter getFilter() {
-        return null;
-    }
+    private boolean delVisible = false;
 
     public interface OnItemCLickListener{
-        void onItemCLick(int position);
         void onDeleteClick(int position);
+        void onClickNote(int position);
+    }
+
+    public void setDelVisible(boolean bool){
+        this.delVisible = bool;
+    }
+
+    public boolean isDelVisible(){
+        return this.delVisible;
     }
 
     public void setOnItemClickListener(OnItemCLickListener listener) {
@@ -39,32 +46,28 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
     public static class NotesViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
+
+        public ImageView getChoosingDelButton() {
+            return choosingDelButton;
+        }
+
         public ImageView choosingDelButton;
         public ImageView imageView;
         public TextView heading;
         public TextView body;
 
-        public NotesViewHolder(@NonNull View itemView, final OnItemCLickListener listener) {
+        public CardView noteDetails;
+
+
+        public NotesViewHolder(@NonNull final View itemView, final OnItemCLickListener listener) {
             super(itemView);
+
             cardView = itemView.findViewById(R.id.cardView);
             choosingDelButton = itemView.findViewById(R.id.chooseDelButton);
 //            imageView = itemView.findViewById(R.id.imageView);
             heading = itemView.findViewById(R.id.headingView);
             body = itemView.findViewById(R.id.bodyView);
-
-            // All items click listener
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onItemCLick(position);
-                        }
-                    }
-                }
-            });
-
+            noteDetails = itemView.findViewById(R.id.noteDetailsBg);
             // x button click listener
             choosingDelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,13 +80,31 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                     }
                 }
             });
+
+            // item click listener
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            // what you put in function oin main activity will happen
+                            listener.onClickNote(position);
+
+                        }
+                    }
+                }
+            });
+
+//            if (){
+//                choosingDelButton.setVisibility(View.VISIBLE);
+//            }
+//            else if (!visibleDel){
+//                choosingDelButton.setVisibility(View.INVISIBLE);
+//            }
+
+
         }
-
-
-        public void toggleDelButton(){
-            choosingDelButton.setVisibility(View.VISIBLE);
-        }
-
     }
 
     public NotesAdapter(ArrayList<NoteItem> notesList) {
@@ -113,6 +134,43 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public int getItemCount() {
         return notesList.size();
     }
+
+
+    @Override
+    public Filter getFilter() {
+        return notesFilter;
+    }
+
+    private Filter notesFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+                List<NoteItem> filteredList = new ArrayList<>();
+
+                if (constraint == null || constraint.length() ==0) {
+                    filteredList.addAll(noteListFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (NoteItem note : noteListFull){
+                        if (note.getHeading().toLowerCase().contains(filterPattern) || note.getBody().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(note);
+                        }
+                    }
+            }
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+
+                return results;
+        }
+
+        // Sends filtered data to UI thread.
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            notesList.clear();
+            notesList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 
 }
