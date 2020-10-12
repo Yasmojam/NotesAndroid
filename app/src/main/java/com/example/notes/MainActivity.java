@@ -1,6 +1,8 @@
 package com.example.notes;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -14,10 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
 
@@ -26,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     // Used to load individual data sets into recycler rather than loading all at once and giving poor performance.
     private NotesAdapter recyclerAdapter;
-    private FlexboxLayoutManager recyclerLayoutManager;
+    private GridLayoutManager recyclerLayoutManager;
 //    private RecyclerView.LayoutManager recyclerLayoutManager;
     ArrayList<NoteItem> notesList;
 
@@ -80,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NoteDetails.class);
+                intent.putExtra("State", "creating");
+                // request code 2 for new note
+                startActivityForResult(intent, 2);
 
             }
         });
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     public void buildRecyclerView(){
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // keep size of the view the same size no matter number of items
-        recyclerLayoutManager = new FlexboxLayoutManager(this, FlexDirection.ROW);
+        recyclerLayoutManager = new GridLayoutManager(this, 2);
         recyclerAdapter = new NotesAdapter(notesList);
         recyclerView.setLayoutManager(recyclerLayoutManager);
         recyclerView.setAdapter(recyclerAdapter);
@@ -141,10 +143,47 @@ public class MainActivity extends AppCompatActivity {
                 // try to change bg of detail card
                 Log.i("clicked", "Note No. " + position  + " clicked");
                 Intent intent = new Intent(MainActivity.this, NoteDetails.class);
+                intent.putExtra("State", "editing");
                 intent.putExtra("Note Item", notesList.get(position));
-                startActivity(intent);
+                // Use this for changing note on saving.
+                intent.putExtra("Note position", position);
+
+                // asks for activity which wishes to start and request code
+                startActivityForResult(intent, 1);
+//                startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1){
+            if (resultCode == RESULT_OK) {
+                String headingText = data.getStringExtra("Heading text");
+                String bodyText = data.getStringExtra("Body text");
+                int position = data.getIntExtra("Note position", -1); // if nothing returned then -1
+
+                NoteItem changingNoteItem = notesList.get(position);
+                changingNoteItem.setHeading(headingText);
+                changingNoteItem.setBody(bodyText);
+                recyclerAdapter.notifyItemChanged(position);
+            }
+        }
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                String headingText = data.getStringExtra("Heading text");
+                String bodyText = data.getStringExtra("Body text");
+                // Default to this colour & icon for now
+                String color = "#C6D8D3";
+                int imageResource = R.drawable.ic_android;
+
+                NoteItem newNote =  new NoteItem(imageResource, headingText, bodyText, color);
+                notesList.add(newNote);
+                // notify adapter that a new addition at end of list which is length
+                recyclerAdapter.notifyItemInserted(notesList.size()-1);
+            }
+        }
     }
 
     protected TextWatcher textWatcher = new TextWatcher() {
