@@ -8,4 +8,6 @@
     <color name="textColorPrimary">#32292F</color>
     <color name="colorButton">#7BB8E0</color>
     <color name="colorIconFill">#FFFFFF</color>
+
+    <color name="colorDisabled">#FF333333</color>
 </resources>

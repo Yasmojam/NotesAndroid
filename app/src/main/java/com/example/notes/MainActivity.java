@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,12 +22,15 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SQLiteDatabase database;
+
     private RecyclerView recyclerView;
     // Used to load individual data sets into recycler rather than loading all at once and giving poor performance.
     private NotesAdapter recyclerAdapter;
     private GridLayoutManager recyclerLayoutManager;
 //    private RecyclerView.LayoutManager recyclerLayoutManager;
     ArrayList<NoteItem> notesList;
+
 
     private LinearLayout searchContainer;
     private EditText searchBar;
@@ -51,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        NotesDBHelper dbHelper = new NotesDBHelper(this);
+        database = dbHelper.getWritableDatabase();
 
         createNotesList();
         buildRecyclerView();
@@ -226,15 +233,19 @@ public class MainActivity extends AppCompatActivity {
             isDeleting = true;
 
             addButton.setVisibility(View.INVISIBLE);
-//            chooseDelButton.setVisibility(View.VISIBLE);
             deleteButton.setImageResource(R.drawable.ic_done);
+
+            recyclerAdapter.setDelVisible(true);
+            recyclerAdapter.notifyDataSetChanged();
 
         }
         else if (isDeleting){
             isDeleting = false;
             addButton.setVisibility(View.VISIBLE);
-//            chooseDelButton.setVisibility(View.INVISIBLE);
             deleteButton.setImageResource(R.drawable.ic_delete);
+
+            recyclerAdapter.setDelVisible(false);
+            recyclerAdapter.notifyDataSetChanged();
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.notes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,25 +20,23 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Filterable {
+    private Context context;
+    private Cursor cursor;
 
     // Filtered list which is shown to user
     private ArrayList<NoteItem> notesList;
     // entire list
     private ArrayList<NoteItem> noteListFull;
     private OnItemCLickListener notesListener;
-    private boolean delVisible = false;
 
-    public interface OnItemCLickListener{
+    public interface DeleteStateChangedListener {
+        public void OnDeleteStateChanged();
+    }
+
+    public interface OnItemCLickListener {
         void onDeleteClick(int position);
+
         void onClickNote(int position);
-    }
-
-    public void setDelVisible(boolean bool){
-        this.delVisible = bool;
-    }
-
-    public boolean isDelVisible(){
-        return this.delVisible;
     }
 
     public void setOnItemClickListener(OnItemCLickListener listener) {
@@ -47,16 +46,31 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public static class NotesViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
 
-        public ImageView getChoosingDelButton() {
-            return choosingDelButton;
-        }
-
         public ImageView choosingDelButton;
         public ImageView imageView;
         public TextView heading;
         public TextView body;
 
         public CardView noteDetails;
+
+//        // Create a custom listener for delete buttons
+//        private static boolean delVisible = false;
+//        private static List<DeleteStateChangedListener> listeners = new ArrayList<>();
+//        // getter
+//        public boolean isDelVisible() {
+//            return delVisible;
+//        }
+//        // setter
+//        public void setDelVisible(boolean delVisible) {
+//            this.delVisible = delVisible;
+//
+//            for (DeleteStateChangedListener listener : listeners) {
+//                listener.OnDeleteStateChanged();
+//            }
+//        }
+//        // Add listener to list of listeners
+//        public static void addDeleteStateListener(DeleteStateChangedListener listener) {
+//            listeners.add(listener);
 
 
         public NotesViewHolder(@NonNull final View itemView, final OnItemCLickListener listener) {
@@ -68,6 +82,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             heading = itemView.findViewById(R.id.headingView);
             body = itemView.findViewById(R.id.bodyView);
             noteDetails = itemView.findViewById(R.id.noteDetailsBg);
+
+
             // x button click listener
             choosingDelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,13 +112,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 }
             });
 
-//            if (){
-//                choosingDelButton.setVisibility(View.VISIBLE);
-//            }
-//            else if (!visibleDel){
-//                choosingDelButton.setVisibility(View.INVISIBLE);
-//            }
-
 
         }
     }
@@ -112,6 +121,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         noteListFull = new ArrayList<>(notesList);
     }
 
+    // Adds visual to item
     @NonNull
     @Override
     public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -120,14 +130,37 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         return nvh;
     }
 
+    // State for delete button
+    private static boolean delVisible = false;
+    // getter
+     public boolean isDelVisible() {
+         return delVisible;
+     }
+     // setter
+     public void setDelVisible(boolean delVisible) {
+         this.delVisible = delVisible;
+     }
+
+
+    // Binds data to item
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
+//        if (!cursor.move(position)){
+//            return;
+//        }
         NoteItem currentItem = notesList.get(position);
-
         holder.cardView.setCardBackgroundColor(Color.parseColor(currentItem.getColor()));
 //        holder.imageView.setImageResource(currentItem.getImageResource());
         holder.heading.setText(currentItem.getHeading());
         holder.body.setText(currentItem.getBody());
+
+        // CHECK IF SHOULD DISPLAY X BUTTON
+        if (!isDelVisible()) {
+            holder.choosingDelButton.setVisibility(View.INVISIBLE);
+        }
+        else{
+            holder.choosingDelButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
