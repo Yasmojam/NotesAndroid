@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 sortNotesDescDate();
                 dbHelper.updateNote(changingNoteItem);
                 // Tell view that item has moved from old position to new position
+                recyclerAdapter.notifyItemChanged(position);
                 recyclerAdapter.notifyItemMoved(position, 0);
             }
         }
