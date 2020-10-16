@@ -3,7 +3,10 @@ package com.example.notes;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +24,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Filterable {
     private Context context;
-    private Cursor cursor;
-
     // Filtered list which is shown to user
     private ArrayList<NoteItem> notesList;
     // entire list
     private ArrayList<NoteItem> noteListFull;
+    private NotesDBHelper dbHelper;
     private OnItemCLickListener notesListener;
 
-    public interface DeleteStateChangedListener {
-        public void OnDeleteStateChanged();
+
+
+    /**
+     * Constructor for adapter.
+     */
+    public NotesAdapter(Context context, ArrayList<NoteItem> notesList) {
+        this.context = context;
+        this.notesList = notesList;
+        noteListFull = new ArrayList<>(notesList);
+        dbHelper = new NotesDBHelper(context);
     }
+
 
     public interface OnItemCLickListener {
         void onDeleteClick(int position);
@@ -42,35 +53,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public void setOnItemClickListener(OnItemCLickListener listener) {
         notesListener = listener;
     }
-
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder
     public static class NotesViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
-
         public ImageView choosingDelButton;
-        public ImageView imageView;
         public TextView heading;
         public TextView body;
 
         public CardView noteDetails;
-
-//        // Create a custom listener for delete buttons
-//        private static boolean delVisible = false;
-//        private static List<DeleteStateChangedListener> listeners = new ArrayList<>();
-//        // getter
-//        public boolean isDelVisible() {
-//            return delVisible;
-//        }
-//        // setter
-//        public void setDelVisible(boolean delVisible) {
-//            this.delVisible = delVisible;
-//
-//            for (DeleteStateChangedListener listener : listeners) {
-//                listener.OnDeleteStateChanged();
-//            }
-//        }
-//        // Add listener to list of listeners
-//        public static void addDeleteStateListener(DeleteStateChangedListener listener) {
-//            listeners.add(listener);
 
 
         public NotesViewHolder(@NonNull final View itemView, final OnItemCLickListener listener) {
@@ -84,18 +76,18 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             noteDetails = itemView.findViewById(R.id.noteDetailsBg);
 
 
-            // x button click listener
-            choosingDelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onDeleteClick(position);
-                        }
-                    }
-                }
-            });
+//            // x button click listener
+//            choosingDelButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (listener != null) {
+//                        int position = getAdapterPosition();
+//                        if (position != RecyclerView.NO_POSITION) {
+//                            listener.onDeleteClick(position);
+//                        }
+//                    }
+//                }
+//            });
 
             // item click listener
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -116,12 +108,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         }
     }
 
-    public NotesAdapter(ArrayList<NoteItem> notesList) {
-        this.notesList = notesList;
-        noteListFull = new ArrayList<>(notesList);
-    }
+
 
     // Adds visual to item
+    // Create new views (invoked by the layout manager)
     @NonNull
     @Override
     public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -142,12 +132,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
      }
 
 
+
+
     // Binds data to item
     @Override
-    public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
-//        if (!cursor.move(position)){
-//            return;
-//        }
+    public void onBindViewHolder(@NonNull final NotesViewHolder holder, int position) {
+        // - get element from your dataset at this position
+        // - replace the contents of the view with that element
+
         NoteItem currentItem = notesList.get(position);
         holder.cardView.setCardBackgroundColor(Color.parseColor(currentItem.getColor()));
 //        holder.imageView.setImageResource(currentItem.getImageResource());
@@ -161,13 +153,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         else{
             holder.choosingDelButton.setVisibility(View.VISIBLE);
         }
+
     }
 
     @Override
     public int getItemCount() {
         return notesList.size();
     }
-
 
     @Override
     public Filter getFilter() {

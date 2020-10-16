@@ -1,11 +1,15 @@
 package com.example.notes;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,22 +23,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
     private SQLiteDatabase database;
-
+    private  NotesDBHelper dbHelper;
     private RecyclerView recyclerView;
     // Used to load individual data sets into recycler rather than loading all at once and giving poor performance.
     private NotesAdapter recyclerAdapter;
     private GridLayoutManager recyclerLayoutManager;
-//    private RecyclerView.LayoutManager recyclerLayoutManager;
     ArrayList<NoteItem> notesList;
 
 
     private LinearLayout searchContainer;
     private EditText searchBar;
-//    private ImageView chooseDelButton;
     private ImageButton deleteButton;
     private ImageButton addButton;
     private ImageButton searchButton;
@@ -56,13 +59,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        NotesDBHelper dbHelper = new NotesDBHelper(this);
+       dbHelper = new NotesDBHelper(this);
         database = dbHelper.getWritableDatabase();
+        notesList = dbHelper.getAllNotes();
+        sortNotesDescDate();
 
-        createNotesList();
         buildRecyclerView();
         setButtonsEditText();
 
+    }
+
+    /**
+     * Sorts notes by descending date.
+     */
+    public void sortNotesDescDate(){
+        Collections.sort(notesList, Collections.<NoteItem>reverseOrder());
     }
 
     public void setButtonsEditText() {
@@ -72,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.editSearch);
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
-//        chooseDelButton = findViewById(R.id.chooseDelButton);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,27 +125,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void createNotesList(){
-        notesList = new ArrayList<>();
-        notesList.add(new NoteItem(R.drawable.ic_shopping_basket, "To buy", "Buy stuff", "#D88C9A"));
-        notesList.add(new NoteItem(R.drawable.ic_assignment, "Assignment", "Do assignment", "#F2D0A9"));
-        notesList.add(new NoteItem(R.drawable.ic_bookmark, "Here  Here bookmark Here bookmark v Here bookmark Here bookmark Here bookmark", "Bookmark is here", "#F1E3D3"));
-        notesList.add(new NoteItem(R.drawable.ic_shopping_basket, "To buy", "Buy stuff", "#99C1B9"));
-        notesList.add(new NoteItem(R.drawable.ic_assignment, "Assignment", "Do assignment", "#8E7DBE"));
-        notesList.add(new NoteItem(R.drawable.ic_bookmark, "Here bookmark", "Bookmark is here", "#D88C9A"));
-        notesList.add(new NoteItem(R.drawable.ic_shopping_basket, "To buy", "Buy stuff", "#F2D0A9"));
-        notesList.add(new NoteItem(R.drawable.ic_assignment, "Assignment", "Do assignment", "#F1E3D3"));
-        notesList.add(new NoteItem(R.drawable.ic_bookmark, "Here bookmark", "Bookmark is here", "#99C1B9"));
-        notesList.add(new NoteItem(R.drawable.ic_shopping_basket, "To buy", "Buy stuff", "#8E7DBE"));
-        notesList.add(new NoteItem(R.drawable.ic_assignment, "Assignment", "Do assignment", "#D88C9A"));
-        notesList.add(new NoteItem(R.drawable.ic_bookmark, "Here bookmark", "Bookmark is here Bookmark is here Bookmark is here Bookmark is here Bookmark is herev Bookmark is here", "#F2D0A9"));
-    }
+
 
     public void buildRecyclerView(){
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // keep size of the view the same size no matter number of items
         recyclerLayoutManager = new GridLayoutManager(this, 2);
-        recyclerAdapter = new NotesAdapter(notesList);
+        recyclerAdapter = new NotesAdapter(this, notesList);
         recyclerView.setLayoutManager(recyclerLayoutManager);
         recyclerView.setAdapter(recyclerAdapter);
 
@@ -162,36 +158,72 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens note details poge and requests new info for note either new note or exisiting.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1){
+            // EDITING
             if (resultCode == RESULT_OK) {
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
+                String timestamp = data.getStringExtra("Timestamp");
                 int position = data.getIntExtra("Note position", -1); // if nothing returned then -1
 
                 NoteItem changingNoteItem = notesList.get(position);
                 changingNoteItem.setHeading(headingText);
                 changingNoteItem.setBody(bodyText);
-                recyclerAdapter.notifyItemChanged(position);
+                changingNoteItem.setTimestamp(timestamp);
+
+                // Reorder notes for the recyclerview
+                sortNotesDescDate();
+                dbHelper.updateNote(changingNoteItem);
+                // Tell view that item has moved from old position to new position
+                recyclerAdapter.notifyItemMoved(position, 0);
             }
         }
+        // CREATION
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
+                String timestamp = data.getStringExtra("Timestamp");
                 // Default to this colour & icon for now
                 String color = "#C6D8D3";
-                int imageResource = R.drawable.ic_android;
+                String icon = "android";
 
-                NoteItem newNote =  new NoteItem(imageResource, headingText, bodyText, color);
+                // if the note is completely empty then stop process
+                if (headingText.trim().length() == 0 && bodyText.trim().length() == 0){
+                    return;
+                }
+
+                NoteItem newNote =  new NoteItem(headingText, bodyText, color, icon, timestamp);
+                Log.i("New Note", newNote.getBody());
                 notesList.add(newNote);
+                sortNotesDescDate();
+                dbHelper.addNote(newNote);
                 // notify adapter that a new addition at end of list which is length
-                recyclerAdapter.notifyItemInserted(notesList.size()-1);
+                recyclerAdapter.notifyItemInserted(0);
             }
         }
     }
+
+//    /**
+//     * Function which returns all rows of table in order of newest
+//     */
+//    private Cursor getAllItems() {
+//        return database.query(
+//                NotesContract.NoteEntry.TABLE_NAME,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null,
+//                NotesContract.NoteEntry.COLUMN_TIMESTAMP +" DESC"
+//        );
+//    }
 
     protected TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -210,22 +242,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public String getAppState() {
-        return appState;
-    }
-
-    public void setAppState(String appState) {
-        this.appState = appState;
-    }
-
     public void removeItem(int position){
         notesList.remove(position);
         recyclerAdapter.notifyItemRemoved(position);
-    }
-
-    public void changeItem(int position, String text){
-        notesList.get(position).setHeading(text);
-        recyclerAdapter.notifyItemChanged(position);
     }
 
     public void initiateDeletion(){

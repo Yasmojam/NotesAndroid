@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.sql.Timestamp;
+
 public class NoteDetails extends AppCompatActivity {
     DisplayMetrics dm;
 
@@ -28,9 +30,10 @@ public class NoteDetails extends AppCompatActivity {
     ImageButton cancelButton;
 
     // Data params
-    int imageResource;
+    String icon;
     String heading;
     String body;
+    String timestamp;
 
     Intent intent;
     String state;
@@ -55,14 +58,15 @@ public class NoteDetails extends AppCompatActivity {
         detailBgCard = findViewById(R.id.noteDetailsBg);
 
         if (state.equals("editing")){
-            imageResource = noteItem.getImageResource();
+            icon = noteItem.getIcon();
             heading = noteItem.getHeading();
             body = noteItem.getBody();
+
             int color = Color.parseColor(noteItem.getColor());
 
             detailHeading.setText(heading);
             detailBody.setText(body);
-            detailImage.setImageResource(imageResource);
+            detailImage.setImageResource(getIconFromString(icon));
             detailBgCard.setCardBackgroundColor(color);
         }
 
@@ -78,6 +82,7 @@ public class NoteDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 hideKeyboard(v);
+                timestamp = new Timestamp(System.currentTimeMillis()).toString();
                 if (state.equals("editing")) {
                     // Assign note position
                     notePos = intent.getIntExtra("Note position", -1);
@@ -87,12 +92,13 @@ public class NoteDetails extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra("Heading text", headingText);
                     intent.putExtra("Body text", bodyText);
+                    intent.putExtra("Timestamp", timestamp);
                     intent.putExtra("Note position", notePos);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
                 else if (state.equals("creating")){
-                    Log.i("Note", "saved");
+
 
                     String headingText = detailHeading.getText().toString();
                     String bodyText = detailBody.getText().toString();
@@ -100,8 +106,11 @@ public class NoteDetails extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra("Heading text", headingText);
                     intent.putExtra("Body text", bodyText);
-                    intent.putExtra("Note position", notePos);
+                    intent.putExtra("Timestamp", timestamp);
                     setResult(RESULT_OK, intent);
+
+                    Log.i("heading", headingText);
+                    Log.i("body", bodyText);
                     finish();
                 }
             }
@@ -143,6 +152,20 @@ public class NoteDetails extends AppCompatActivity {
         super.onStop();
         CardView view = findViewById(R.id.noteDetailsBg);
         hideKeyboard(view);
+    }
+
+
+    public int getIconFromString(String icon) {
+        switch (icon) {
+            case ("android"):
+                return R.drawable.ic_android;
+            case ("assignment"):
+                return R.drawable.ic_assignment;
+            case ("bookmark"):
+                return R.drawable.ic_bookmark;
+            default:
+                return R.drawable.ic_error;
+        }
     }
 
     /*Hides keyboard*/

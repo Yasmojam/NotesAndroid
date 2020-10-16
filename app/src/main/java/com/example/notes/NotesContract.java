@@ -2,6 +2,7 @@ package com.example.notes;
 
 import android.provider.BaseColumns;
 
+// Contains all table columns
 public class NotesContract {
 
     private NotesContract() {}
