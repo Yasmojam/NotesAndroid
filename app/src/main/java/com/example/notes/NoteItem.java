@@ -11,7 +11,7 @@ import java.time.Instant;
 
 public class NoteItem implements Parcelable, Comparable<NoteItem> {
 
-    private long id;
+    private String id;
     private String heading;
     private String body;
     private String color="#FFFFFF";
@@ -22,7 +22,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
      * Constructor with id
      */
     public NoteItem(
-            long id,
+            String id,
             String heading,
             String body,
             String color,
@@ -74,11 +74,11 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
         }
     };
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

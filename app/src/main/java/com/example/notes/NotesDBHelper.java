@@ -47,7 +47,7 @@ public class NotesDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()){
             do {
-                long id = cursor.getLong(0);
+                String id = cursor.getString(0);
                 String heading = cursor.getString(1);
                 String body = cursor.getString(2);
                 String color = cursor.getString(3);

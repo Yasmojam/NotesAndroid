@@ -210,21 +210,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    /**
-//     * Function which returns all rows of table in order of newest
-//     */
-//    private Cursor getAllItems() {
-//        return database.query(
-//                NotesContract.NoteEntry.TABLE_NAME,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                NotesContract.NoteEntry.COLUMN_TIMESTAMP +" DESC"
-//        );
-//    }
-
     protected TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -243,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void removeItem(int position){
+        dbHelper.deleteNote(notesList.get(position).getId());
         notesList.remove(position);
         recyclerAdapter.notifyItemRemoved(position);
     }

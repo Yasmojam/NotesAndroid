@@ -76,18 +76,18 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             noteDetails = itemView.findViewById(R.id.noteDetailsBg);
 
 
-//            // x button click listener
-//            choosingDelButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (listener != null) {
-//                        int position = getAdapterPosition();
-//                        if (position != RecyclerView.NO_POSITION) {
-//                            listener.onDeleteClick(position);
-//                        }
-//                    }
-//                }
-//            });
+            // x button click listener
+            choosingDelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onDeleteClick(position);
+                        }
+                    }
+                }
+            });
 
             // item click listener
             itemView.setOnClickListener(new View.OnClickListener() {
