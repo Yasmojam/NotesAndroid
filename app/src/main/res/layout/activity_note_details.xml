@@ -2,185 +2,245 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/noteContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/noteDetailsBg"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
         android:layout_weight="7"
         android:padding="10dp"
-        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardBackgroundColor="@color/colorOpal"
         app:cardCornerRadius="10dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/linearContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="3dp">
 
             <LinearLayout
+                android:id="@+id/buttonContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="3dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:id="@+id/buttonContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/saveButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@drawable/button_save"
-                        android:padding="3dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/ic_done" />
-
-                    <ImageView
-                        android:id="@+id/detailImage"
-                        android:layout_width="50dp"
-                        android:layout_height="60dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_android" />
-
-                    <ImageButton
-                        android:id="@+id/cancelButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@drawable/button_discard"
-                        android:padding="3dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/ic_cancel_note" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/detailHeading"
-                        android:layout_width="wrap_content"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="6"
-                        android:background="@drawable/search_bg"
-                        android:ems="10"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Title"
-                        android:imeOptions="actionDone"
-                        android:inputType="textPersonName"
-                        android:padding="10dp" />
-
-                </LinearLayout>
-
-                <EditText
-                    android:id="@+id/detailBody"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center_horizontal"
+                <ImageButton
+                    android:id="@+id/saveButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_save"
+                    android:padding="3dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_done" />
+
+                <ImageView
+                    android:id="@+id/detailImage"
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
                     android:layout_weight="1"
-                    android:background="@drawable/search_bg"
-                    android:ems="10"
-                    android:fontFamily="sans-serif-light"
-                    android:gravity="start|top|left"
-                    android:hint="Body"
-                    android:imeOptions="actionDone"
-                    android:inputType="textMultiLine"
-                    android:isScrollContainer="false"
-                    android:overScrollMode="always"
-                    android:padding="10dp" />
+                    app:srcCompat="@drawable/ic_android" />
+
+                <ImageButton
+                    android:id="@+id/cancelButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/button_discard"
+                    android:padding="3dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_cancel_note" />
 
             </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/detailHeading"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/search_bg"
+                    android:ems="10"
+                    android:fontFamily="sans-serif-light"
+                    android:hint="Title"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPersonName"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:id="@+id/settingsButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    app:srcCompat="@drawable/ic_settings" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/detailBody"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/search_bg"
+                android:ems="10"
+                android:fontFamily="sans-serif-light"
+                android:gravity="start|top|left"
+                android:hint="Body"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:padding="10dp" />
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/chooseAlmondCol"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
+        <LinearLayout
+            android:id="@+id/toggleSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/colorAlmond"
-            app:cardCornerRadius="30dp" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/chooseChampagneCol"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
+            <ImageView
+                android:id="@+id/iconToggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_android" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/toggleColBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/togglecolors"
+                app:cardBackgroundColor="@color/colorOpal"
+                app:cardCornerRadius="40dp">
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/togglecolors"
+                    android:foregroundGravity="center" />
+            </androidx.cardview.widget.CardView>
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_share" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/colorOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/colorChampagne"
-            app:cardCornerRadius="30dp" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/choosePinkCol"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/colorPink"
-            app:cardCornerRadius="30dp" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chooseAlmondCol"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/colorAlmond"
+                app:cardCornerRadius="30dp" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/chooseBlueCol"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/colorBlue"
-            app:cardCornerRadius="30dp" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chooseChampagneCol"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/colorChampagne"
+                app:cardCornerRadius="30dp" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/chooseOpalCol"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/colorOpal"
-            app:cardCornerRadius="30dp" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/choosePinkCol"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/colorPink"
+                app:cardCornerRadius="30dp" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/choosePurpleCol"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/colorPurple"
-            app:cardCornerRadius="30dp" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chooseBlueCol"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/colorBlue"
+                app:cardCornerRadius="30dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chooseOpalCol"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/colorOpal"
+                app:cardCornerRadius="30dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/choosePurpleCol"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/colorPurple"
+                app:cardCornerRadius="30dp" />
 
 
-
-
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

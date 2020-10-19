@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#C6D8D3</color>
+    <color name="colorPrimary">#99C1B9</color>
     <color name="colorPrimaryDark">#99C1B9</color>
     <color name="colorAccent">#59A5D8</color>
 
@@ -8,7 +8,7 @@
     <color name="colorBlue">#3D5A80</color>
     <color name="colorChampagne">#F2D0A9</color>
     <color name="colorAlmond">#F1E3D3</color>
-    <color name="colorOpal">#99C1B9</color>
+    <color name="colorOpal">#C6D8D3</color>
     <color name="colorPurple">#8E7DBE</color>
 
     <color name="textColorPrimary">#32292F</color>

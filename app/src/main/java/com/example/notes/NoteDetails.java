@@ -3,23 +3,32 @@ package com.example.notes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class NoteDetails extends AppCompatActivity {
     DisplayMetrics dm;
+
+    NoteItem noteItem;
 
     // Pop up params
     CardView detailBgCard;
@@ -28,6 +37,24 @@ public class NoteDetails extends AppCompatActivity {
     ImageView detailImage;
     ImageButton saveButton;
     ImageButton cancelButton;
+    LinearLayout noteContainer;
+    CardView toggleCols;
+    ImageView settingsButton;
+    LinearLayout toggleSettings;
+
+    LinearLayout colorOptions;
+    LinearLayout buttonContainer;
+    LinearLayout linearContainer;
+
+    // Coloured dots
+    ArrayList<CardView>  coloredDots= new ArrayList<>();
+    CardView chooseAlmondCol;
+    CardView chooseChampagneCol;
+    CardView choosePinkCol;
+    CardView chooseBlueCol;
+    CardView chooseOpalCol;
+    CardView choosePurpleCol;
+    View hightlightCol;
 
     // Data params
     String icon;
@@ -46,7 +73,7 @@ public class NoteDetails extends AppCompatActivity {
 
         intent = getIntent();
 
-        NoteItem noteItem = intent.getParcelableExtra("Note Item");
+        noteItem = intent.getParcelableExtra("Note Item");
 
         state = intent.getStringExtra("State");
 
@@ -56,6 +83,40 @@ public class NoteDetails extends AppCompatActivity {
         detailBody = findViewById(R.id.detailBody);
         detailImage = findViewById(R.id.detailImage);
         detailBgCard = findViewById(R.id.noteDetailsBg);
+
+        noteContainer = findViewById(R.id.noteContainer);
+        buttonContainer = findViewById(R.id.buttonContainer);
+        linearContainer = findViewById(R.id.linearContainer);
+
+
+        settingsButton = findViewById(R.id.settingsButton);
+        toggleSettings = findViewById(R.id.toggleSettings);
+        toggleCols = findViewById(R.id.toggleColBtn);
+        colorOptions = findViewById(R.id.colorOptions);
+
+        // Col
+        chooseAlmondCol = findViewById(R.id.chooseAlmondCol);
+        chooseChampagneCol = findViewById(R.id.chooseChampagneCol);
+        choosePinkCol = findViewById(R.id.choosePinkCol);;
+        chooseBlueCol = findViewById(R.id.chooseBlueCol);;
+        chooseOpalCol = findViewById(R.id.chooseOpalCol);;
+        choosePurpleCol = findViewById(R.id.choosePurpleCol);;
+        coloredDots.add(chooseAlmondCol);
+        coloredDots.add(chooseChampagneCol);
+        coloredDots.add(choosePinkCol);
+        coloredDots.add(chooseBlueCol);
+        coloredDots.add(chooseOpalCol);
+        coloredDots.add(choosePurpleCol);
+
+        // Highlight
+        hightlightCol = new View(this);
+        hightlightCol.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        hightlightCol.setBackground(getResources().getDrawable(R.drawable.togglecolors));
+        hightlightCol.setVisibility(View.VISIBLE);
+
 
         if (state.equals("editing")){
             icon = noteItem.getIcon();
@@ -70,10 +131,16 @@ public class NoteDetails extends AppCompatActivity {
             detailBgCard.setCardBackgroundColor(color);
         }
 
+        LayoutTransition layoutTransition = new LayoutTransition();
+        layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        noteContainer.setLayoutTransition(layoutTransition);
+        buttonContainer.setLayoutTransition(layoutTransition);
+        linearContainer.setLayoutTransition(layoutTransition);
 
 
         setUpPopUp();
         setOnClickListeners();
+        markColDot();
     }
 
     private void setOnClickListeners(){
@@ -125,6 +192,32 @@ public class NoteDetails extends AppCompatActivity {
                 finish();
             }
         });
+
+        toggleCols.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (colorOptions.isShown()){
+                    colorOptions.setVisibility(View.GONE);
+                }
+                else{
+                    colorOptions.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (toggleSettings.isShown()){
+                    toggleSettings.setVisibility(View.GONE);
+                    colorOptions.setVisibility(View.GONE);
+                }
+                else{
+                    toggleSettings.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void setUpPopUp(){
@@ -172,5 +265,24 @@ public class NoteDetails extends AppCompatActivity {
     private void hideKeyboard(View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+    }
+
+    private void markColDot(){
+        boolean isDotMarked = false;
+        if (state.equals("editing")) {
+            int noteColor = Color.parseColor(noteItem.getColor());
+            for (CardView cardView : coloredDots) {
+                if (cardView.getCardBackgroundColor().getDefaultColor() == noteColor) {
+                    Log.i("dot highlight", "highlighted");
+                    cardView.addView(hightlightCol);
+                    isDotMarked = true;
+                    return;
+                }
+            }
+        }
+        if (state.equals("creating")) {
+            chooseOpalCol.addView(hightlightCol);
+            isDotMarked = true;
+        }
     }
 }

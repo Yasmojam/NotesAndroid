@@ -9,6 +9,9 @@
                 android:color="@color/colorButton" >
             </solid>
 
+            <stroke
+                android:width="2dp"
+                android:color="@color/colorIconFill"></stroke>
 
             <!-- The radius makes the corners rounded -->
             <corners

@@ -1,5 +1,7 @@
 package com.example.notes;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -148,10 +150,22 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         // CHECK IF SHOULD DISPLAY X BUTTON
         if (!isDelVisible()) {
-            holder.choosingDelButton.setVisibility(View.INVISIBLE);
+            holder.choosingDelButton.animate().alpha(0f).setDuration(8).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    holder.choosingDelButton.setVisibility(View.INVISIBLE);
+                }
+            });
         }
         else{
-            holder.choosingDelButton.setVisibility(View.VISIBLE);
+            holder.choosingDelButton.animate().alpha(1.0f).setDuration(8).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    holder.choosingDelButton.setVisibility(View.VISIBLE);
+                }
+            });
         }
 
     }
