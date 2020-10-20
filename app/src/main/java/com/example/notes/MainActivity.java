@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<NoteItem> notesList;
 
 
+    private View dimmer;
     private LinearLayout searchContainer;
     private EditText searchBar;
     private ImageButton deleteButton;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dimmer = findViewById(R.id.dim);
 
        dbHelper = new NotesDBHelper(this);
         database = dbHelper.getWritableDatabase();
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("State", "creating");
                 // request code 2 for new note
                 startActivityForResult(intent, 2);
-
+                dimmer.setVisibility(View.VISIBLE);
             }
         });
 
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // asks for activity which wishes to start and request code
                 startActivityForResult(intent, 1);
+                dimmer.setVisibility(View.VISIBLE);
 //                startActivity(intent);
             }
         });
@@ -209,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
                 recyclerAdapter.notifyItemInserted(0);
             }
         }
+        // get rid of dimmer
+        dimmer.setVisibility(View.INVISIBLE);
     }
 
     protected TextWatcher textWatcher = new TextWatcher() {

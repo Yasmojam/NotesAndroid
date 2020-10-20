@@ -133,5 +133,11 @@
             app:srcCompat="@drawable/ic_delete" />
     </LinearLayout>
 
+    <View
+        android:id="@+id/dim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4D000000"
+        android:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,6 +61,7 @@ public class NoteDetails extends AppCompatActivity {
     String heading;
     String body;
     String timestamp;
+    int selectedColor;
 
     Intent intent;
     String state;
@@ -123,19 +124,22 @@ public class NoteDetails extends AppCompatActivity {
             heading = noteItem.getHeading();
             body = noteItem.getBody();
 
-            int color = Color.parseColor(noteItem.getColor());
+            selectedColor = Color.parseColor(noteItem.getColor());
 
             detailHeading.setText(heading);
             detailBody.setText(body);
             detailImage.setImageResource(getIconFromString(icon));
-            detailBgCard.setCardBackgroundColor(color);
+            detailBgCard.setCardBackgroundColor(selectedColor);
+        }
+        // Set it to default if not chosen
+        else if (state.equals("creating")){
+            selectedColor = detailBgCard.getCardBackgroundColor().getDefaultColor();
         }
 
         LayoutTransition layoutTransition = new LayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        layoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
         noteContainer.setLayoutTransition(layoutTransition);
-        buttonContainer.setLayoutTransition(layoutTransition);
-        linearContainer.setLayoutTransition(layoutTransition);
 
 
         setUpPopUp();
@@ -218,6 +222,16 @@ public class NoteDetails extends AppCompatActivity {
                 }
             }
         });
+
+        // click listeners for select colours
+        for (CardView cardView : coloredDots){
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
     }
 
     private void setUpPopUp(){
@@ -229,7 +243,7 @@ public class NoteDetails extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width*0.9), (int) (height*0.7));
+        getWindow().setLayout((int) (width*0.9), (int) (height*0.85));
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
@@ -270,19 +284,26 @@ public class NoteDetails extends AppCompatActivity {
     private void markColDot(){
         boolean isDotMarked = false;
         if (state.equals("editing")) {
-            int noteColor = Color.parseColor(noteItem.getColor());
+//            int noteColor = Color.parseColor(noteItem.getColor());
             for (CardView cardView : coloredDots) {
-                if (cardView.getCardBackgroundColor().getDefaultColor() == noteColor) {
+                if (cardView.getCardBackgroundColor().getDefaultColor() == selectedColor) {
                     Log.i("dot highlight", "highlighted");
                     cardView.addView(hightlightCol);
                     isDotMarked = true;
+
+                    // Also set toggle button
+                    toggleCols.setCardBackgroundColor(selectedColor);
                     return;
                 }
             }
         }
-        if (state.equals("creating")) {
+        else if (state.equals("creating")) {
             chooseOpalCol.addView(hightlightCol);
             isDotMarked = true;
+
+            // Also set toggle button
+            toggleCols.setCardBackgroundColor(selectedColor);
         }
+        Log.i("selected col", String.valueOf(selectedColor));
     }
 }
