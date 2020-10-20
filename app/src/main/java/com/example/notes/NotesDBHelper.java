@@ -50,7 +50,7 @@ public class NotesDBHelper extends SQLiteOpenHelper {
                 String id = cursor.getString(0);
                 String heading = cursor.getString(1);
                 String body = cursor.getString(2);
-                String color = cursor.getString(3);
+                int color = cursor.getInt(3);
                 String icon = cursor.getString(4);
                 String timestamp = cursor.getString(5);
                 // Add cursor row to storeNotes

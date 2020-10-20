@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
                 String timestamp = data.getStringExtra("Timestamp");
-                String color = data.getStringExtra("Selected color");
+                int color = data.getIntExtra("Selected color", Color.parseColor("#c6d8d3"));
                 int position = data.getIntExtra("Note position", -1); // if nothing returned then -1
 
                 NoteItem changingNoteItem = notesList.get(position);
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
-                String color = data.getStringExtra("Selected color");
+                int color = data.getIntExtra("Selected color", Color.parseColor("#c6d8d3"));
                 String timestamp = data.getStringExtra("Timestamp");
                 // Default to this icon for now
 //                String color = "#C6D8D3";

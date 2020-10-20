@@ -1,5 +1,6 @@
 package com.example.notes;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -14,7 +15,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
     private String id;
     private String heading;
     private String body;
-    private String color="#FFFFFF";
+    private int color = Color.parseColor("#c6d8d3");
     private String icon;
     private String timestamp;
 
@@ -25,7 +26,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
             String id,
             String heading,
             String body,
-            String color,
+            int color,
             String icon,
             String timestamp
     ) {
@@ -43,7 +44,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
     public NoteItem(
             String heading,
             String body,
-            String color,
+            int color,
             String icon,
             String timestamp
     ) {
@@ -57,7 +58,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
     protected NoteItem(Parcel in) {
         heading = in.readString();
         body = in.readString();
-        color = in.readString();
+        color = in.readInt();
         icon = in.readString();
         timestamp = in.readString();
     }
@@ -99,11 +100,11 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
         this.body = body;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
     }
 
@@ -132,7 +133,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(heading);
         dest.writeString(body);
-        dest.writeString(color);
+        dest.writeInt(color);
         dest.writeString(icon);
         dest.writeString(timestamp);
     }

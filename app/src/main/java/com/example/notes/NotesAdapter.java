@@ -143,7 +143,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         // - replace the contents of the view with that element
 
         NoteItem currentItem = notesList.get(position);
-        holder.cardView.setCardBackgroundColor(Color.parseColor(currentItem.getColor()));
+        holder.cardView.setCardBackgroundColor(currentItem.getColor());
 //        holder.imageView.setImageResource(currentItem.getImageResource());
         holder.heading.setText(currentItem.getHeading());
         holder.body.setText(currentItem.getBody());

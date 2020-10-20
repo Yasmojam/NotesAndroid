@@ -120,7 +120,7 @@ public class NoteDetails extends AppCompatActivity {
             heading = noteItem.getHeading();
             body = noteItem.getBody();
 
-            selectedColor = Color.parseColor(noteItem.getColor());
+            selectedColor = noteItem.getColor();
 
             detailHeading.setText(heading);
             detailBody.setText(body);
@@ -162,7 +162,7 @@ public class NoteDetails extends AppCompatActivity {
                     intent.putExtra("Heading text", headingText);
                     intent.putExtra("Body text", bodyText);
                     // Must convert to hexstring for format to class
-                    intent.putExtra("Selected color", "#" + Integer.toHexString(selectedColor).substring(2));
+                    intent.putExtra("Selected color", selectedColor);
                     intent.putExtra("Timestamp", timestamp);
                     intent.putExtra("Note position", notePos);
                     setResult(RESULT_OK, intent);
@@ -178,7 +178,7 @@ public class NoteDetails extends AppCompatActivity {
                     intent.putExtra("Heading text", headingText);
                     intent.putExtra("Body text", bodyText);
                     // Must convert to hexstring for format to class
-                    intent.putExtra("Selected color", "#" + Integer.toHexString(selectedColor).substring(2));
+                    intent.putExtra("Selected color", selectedColor);
                     intent.putExtra("Timestamp", timestamp);
                     setResult(RESULT_OK, intent);
 
