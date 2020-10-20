@@ -2,6 +2,7 @@ package com.example.notes;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.animation.LayoutTransition;
 import android.content.Intent;
@@ -38,13 +39,12 @@ public class NoteDetails extends AppCompatActivity {
     ImageButton saveButton;
     ImageButton cancelButton;
     LinearLayout noteContainer;
+    ConstraintLayout constraintCont;
     CardView toggleCols;
     ImageView settingsButton;
     LinearLayout toggleSettings;
 
     LinearLayout colorOptions;
-    LinearLayout buttonContainer;
-    LinearLayout linearContainer;
 
     // Coloured dots
     ArrayList<CardView>  coloredDots= new ArrayList<>();
@@ -86,8 +86,7 @@ public class NoteDetails extends AppCompatActivity {
         detailBgCard = findViewById(R.id.noteDetailsBg);
 
         noteContainer = findViewById(R.id.noteContainer);
-        buttonContainer = findViewById(R.id.buttonContainer);
-        linearContainer = findViewById(R.id.linearContainer);
+        constraintCont = findViewById(R.id.constrainedCont);
 
 
         settingsButton = findViewById(R.id.settingsButton);
@@ -136,10 +135,12 @@ public class NoteDetails extends AppCompatActivity {
             selectedColor = detailBgCard.getCardBackgroundColor().getDefaultColor();
         }
 
+        // Attach transitions to the note container and the constraint layouts
         LayoutTransition layoutTransition = new LayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         layoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
         noteContainer.setLayoutTransition(layoutTransition);
+        constraintCont.setLayoutTransition(layoutTransition);
 
 
         setUpPopUp();
