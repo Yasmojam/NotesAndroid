@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -174,11 +175,13 @@ public class MainActivity extends AppCompatActivity {
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
                 String timestamp = data.getStringExtra("Timestamp");
+                String color = data.getStringExtra("Selected color");
                 int position = data.getIntExtra("Note position", -1); // if nothing returned then -1
 
                 NoteItem changingNoteItem = notesList.get(position);
                 changingNoteItem.setHeading(headingText);
                 changingNoteItem.setBody(bodyText);
+                changingNoteItem.setColor(color);
                 changingNoteItem.setTimestamp(timestamp);
 
                 // Reorder notes for the recyclerview
@@ -194,9 +197,10 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
+                String color = data.getStringExtra("Selected color");
                 String timestamp = data.getStringExtra("Timestamp");
-                // Default to this colour & icon for now
-                String color = "#C6D8D3";
+                // Default to this icon for now
+//                String color = "#C6D8D3";
                 String icon = "android";
 
                 // if the note is completely empty then stop process

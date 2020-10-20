@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,8 +14,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -145,7 +142,7 @@ public class NoteDetails extends AppCompatActivity {
 
         setUpPopUp();
         setOnClickListeners();
-        markColDot();
+        generateColorPicker();
     }
 
     private void setOnClickListeners(){
@@ -164,6 +161,8 @@ public class NoteDetails extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra("Heading text", headingText);
                     intent.putExtra("Body text", bodyText);
+                    // Must convert to hexstring for format to class
+                    intent.putExtra("Selected color", "#" + Integer.toHexString(selectedColor).substring(2));
                     intent.putExtra("Timestamp", timestamp);
                     intent.putExtra("Note position", notePos);
                     setResult(RESULT_OK, intent);
@@ -178,6 +177,8 @@ public class NoteDetails extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra("Heading text", headingText);
                     intent.putExtra("Body text", bodyText);
+                    // Must convert to hexstring for format to class
+                    intent.putExtra("Selected color", "#" + Integer.toHexString(selectedColor).substring(2));
                     intent.putExtra("Timestamp", timestamp);
                     setResult(RESULT_OK, intent);
 
@@ -225,10 +226,20 @@ public class NoteDetails extends AppCompatActivity {
         });
 
         // click listeners for select colours
-        for (CardView cardView : coloredDots){
+        for (final CardView cardView : coloredDots){
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Remove the highlight from previous selected colour
+                    getSelectedColOption(selectedColor).removeView(hightlightCol);
+                    // Reassign selected colour to the cardView colour and add highlight
+                    selectedColor = cardView.getCardBackgroundColor().getDefaultColor();
+                    cardView.addView(hightlightCol);
+                    // Change toggle colour
+                    toggleCols.setCardBackgroundColor(selectedColor);
+                    // Change background colour of note activity.
+                    detailBgCard.setCardBackgroundColor(selectedColor);
+
 
                 }
             });
@@ -254,7 +265,9 @@ public class NoteDetails extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Hides Keyboard when activity is exited.
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -263,6 +276,9 @@ public class NoteDetails extends AppCompatActivity {
     }
 
 
+    /**
+     * Method which returns an icon int from the associated string name.
+     */
     public int getIconFromString(String icon) {
         switch (icon) {
             case ("android"):
@@ -282,29 +298,33 @@ public class NoteDetails extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-    private void markColDot(){
-        boolean isDotMarked = false;
+    /**
+     *  Function which highlights the option which is already chosen to the user
+     *  and assigns a colour to the settings menu icon.
+     */
+    private void generateColorPicker(){
         if (state.equals("editing")) {
 //            int noteColor = Color.parseColor(noteItem.getColor());
-            for (CardView cardView : coloredDots) {
-                if (cardView.getCardBackgroundColor().getDefaultColor() == selectedColor) {
-                    Log.i("dot highlight", "highlighted");
-                    cardView.addView(hightlightCol);
-                    isDotMarked = true;
-
-                    // Also set toggle button
-                    toggleCols.setCardBackgroundColor(selectedColor);
-                    return;
-                }
-            }
+            getSelectedColOption(selectedColor).addView(hightlightCol);
+            // Also set toggle button
+            toggleCols.setCardBackgroundColor(selectedColor);
         }
         else if (state.equals("creating")) {
             chooseOpalCol.addView(hightlightCol);
-            isDotMarked = true;
 
             // Also set toggle button
             toggleCols.setCardBackgroundColor(selectedColor);
         }
         Log.i("selected col", String.valueOf(selectedColor));
+    }
+
+    public CardView getSelectedColOption(int selectedColor) {
+        for (CardView cardView : coloredDots) {
+            if (cardView.getCardBackgroundColor().getDefaultColor() == selectedColor) {
+                return cardView;
+            }
+        }
+        // If the for loop returns nothing just return default.
+        return chooseOpalCol;
     }
 }
