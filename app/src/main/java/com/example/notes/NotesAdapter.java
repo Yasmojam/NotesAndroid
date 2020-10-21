@@ -24,7 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> implements Filterable {
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
     private Context context;
     // Filtered list which is shown to user
     private ArrayList<NoteItem> notesList;
@@ -175,41 +175,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         return notesList.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        return notesFilter;
+    public void filterList(ArrayList<NoteItem> filteredList) {
+         notesList = filteredList;
+         notifyDataSetChanged();
     }
-
-    private Filter notesFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-                List<NoteItem> filteredList = new ArrayList<>();
-
-                if (constraint == null || constraint.length() ==0) {
-                    filteredList.addAll(noteListFull);
-                } else {
-                    String filterPattern = constraint.toString().toLowerCase().trim();
-
-                    for (NoteItem note : noteListFull){
-                        if (note.getHeading().toLowerCase().contains(filterPattern) || note.getBody().toLowerCase().contains(filterPattern)) {
-                            filteredList.add(note);
-                        }
-                    }
-            }
-                FilterResults results = new FilterResults();
-                results.values = filteredList;
-
-                return results;
-        }
-
-        // Sends filtered data to UI thread.
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            notesList.clear();
-            notesList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
 
 
 }

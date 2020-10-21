@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (searchContainer.isShown()){
                     searchContainer.setVisibility(View.GONE);
+                    recyclerAdapter.notifyDataSetChanged();
                     hideKeyboard(v);
                 }
                 else {
@@ -126,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 searchBar.setText("");
+                // Reset the filtered list back to original list
+                recyclerAdapter.filterList(notesList);
             }
         });
     }
@@ -234,13 +238,27 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            recyclerAdapter.getFilter().filter(s);
+            filter(s.toString());
         }
     };
 
+    private void filter(String text) {
+        ArrayList<NoteItem> filteredList = new ArrayList<>();
+            for (NoteItem note : notesList){
+                if (note.getHeading().toLowerCase().contains(text) || note.getBody().toLowerCase().contains(text)) {
+                    filteredList.add(note);
+                }
+            }
+            // Update the list shown on recyclerview
+            recyclerAdapter.filterList(filteredList);
+
+    }
+
     public void removeItem(int position){
         dbHelper.deleteNote(notesList.get(position).getId());
+        // remove from notes list
         notesList.remove(position);
+        // remove from filterable list
         recyclerAdapter.notifyItemRemoved(position);
     }
 
