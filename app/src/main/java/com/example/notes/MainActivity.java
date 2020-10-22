@@ -1,15 +1,11 @@
 package com.example.notes;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +21,6 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,12 +32,15 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager recyclerLayoutManager;
     ArrayList<NoteItem> notesList;
 
+    ArrayList<NoteItem> notesToBeDeleted;
 
     private View dimmer;
     private LinearLayout searchContainer;
     private EditText searchBar;
     private ImageButton deleteButton;
     private ImageButton addButton;
+    private ImageButton confirmDelete;
+    private ImageButton cancelDelete;
     private ImageButton searchButton;
     private ImageView clearButton;
     private Boolean isDeleting = false;
@@ -64,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         dimmer = findViewById(R.id.dim);
 
+        notesToBeDeleted = new ArrayList<>();
+
        dbHelper = new NotesDBHelper(this);
         database = dbHelper.getWritableDatabase();
         notesList = dbHelper.getAllNotes();
@@ -84,15 +84,18 @@ public class MainActivity extends AppCompatActivity {
     public void setButtonsEditText() {
         deleteButton = findViewById(R.id.delButton);
         addButton = findViewById(R.id.addButton);
+        confirmDelete = findViewById(R.id.confirm_delete);
+        cancelDelete = findViewById(R.id.cancel_delete);
         searchContainer = findViewById(R.id.searchContainer);
         searchBar = findViewById(R.id.editSearch);
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
 
+        checkDeleteButton();
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateDeletion();
+                instateDeleteMode();
             }
         });
 
@@ -105,6 +108,25 @@ public class MainActivity extends AppCompatActivity {
                 // request code 2 for new note
                 startActivityForResult(intent, 2);
                 dimmer.setVisibility(View.VISIBLE);
+            }
+        });
+
+        confirmDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (NoteItem noteItem : notesToBeDeleted){
+                    removeItem(noteItem);
+                }
+                notesToBeDeleted.clear();
+                removeDeleteMode();
+            }
+        });
+
+        cancelDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notesToBeDeleted.clear();
+                removeDeleteMode();
             }
         });
 
@@ -146,7 +168,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerAdapter.setOnItemClickListener(new NotesAdapter.OnItemCLickListener() {
             @Override
             public void onDeleteClick(int position) {
-                removeItem(position);
+//                ArrayList<NoteItem> notesToBeKept = new ArrayList<>(notesList);
+                notesToBeDeleted.add(notesList.get(position));
+//                notesToBeKept.remove(position);
+//                recyclerAdapter.notifyItemRemoved(position);
+//                recyclerAdapter.filterList(notesToBeKept);
+
+                recyclerAdapter.removeForPreview(position);
             }
 
             @Override
@@ -217,8 +245,11 @@ public class MainActivity extends AppCompatActivity {
                 notesList.add(newNote);
                 sortNotesDescDate();
                 dbHelper.addNote(newNote);
+                // Assign note id from database insertion autoincrementation
+                newNote.setId(dbHelper.getNewestId());
                 // notify adapter that a new addition at end of list which is length
                 recyclerAdapter.notifyItemInserted(0);
+                checkDeleteButton();
             }
         }
         // get rid of dimmer
@@ -254,33 +285,34 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void removeItem(int position){
-        dbHelper.deleteNote(notesList.get(position).getId());
+    public void removeItem(NoteItem noteItem){
+        int notesListPosition = notesList.indexOf(noteItem);
+        dbHelper.deleteNote(noteItem.getId());
         // remove from notes list
-        notesList.remove(position);
+//        notesList.remove(notesListPosition);
         // remove from filterable list
-        recyclerAdapter.notifyItemRemoved(position);
+//        recyclerAdapter.notifyItemRemoved(notesListPosition);
+        checkDeleteButton();
     }
 
-    public void initiateDeletion(){
-        if (!isDeleting){
-            isDeleting = true;
+    public void removeDeleteMode() {
+        addButton.setVisibility(View.VISIBLE);
+        deleteButton.setVisibility(View.VISIBLE);
+        confirmDelete.setVisibility(View.GONE);
+        cancelDelete.setVisibility(View.GONE);
 
-            addButton.setVisibility(View.INVISIBLE);
-            deleteButton.setImageResource(R.drawable.ic_done);
+        recyclerAdapter.setDelVisible(false);
+        recyclerAdapter.notifyDataSetChanged();
+    }
 
-            recyclerAdapter.setDelVisible(true);
-            recyclerAdapter.notifyDataSetChanged();
+    public void instateDeleteMode() {
+        confirmDelete.setVisibility(View.VISIBLE);
+        cancelDelete.setVisibility(View.VISIBLE);
+        addButton.setVisibility(View.GONE);
+        deleteButton.setVisibility(View.GONE);
 
-        }
-        else if (isDeleting){
-            isDeleting = false;
-            addButton.setVisibility(View.VISIBLE);
-            deleteButton.setImageResource(R.drawable.ic_delete);
-
-            recyclerAdapter.setDelVisible(false);
-            recyclerAdapter.notifyDataSetChanged();
-        }
+        recyclerAdapter.setDelVisible(true);
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     /*Hides keyboard*/
@@ -288,4 +320,24 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
+
+    /**
+     * Returns true if the notes list is empty
+     */
+    private boolean isNotesListEmpty(){
+        return notesList.size() < 1 ? true: false;
+        }
+
+    /**
+     *  Make delete button toggle visble if there are notes.
+      */
+    private void checkDeleteButton(){
+        if (isNotesListEmpty()) {
+            deleteButton.setVisibility(View.GONE);
+            addButton.setVisibility(View.VISIBLE);
+        } else {
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+    }
+
 }

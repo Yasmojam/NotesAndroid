@@ -40,11 +40,21 @@ public class NotesDBHelper extends SQLiteOpenHelper {
      *  Return list of NoteItems
      */
     public ArrayList<NoteItem> getAllNotes(){
-        String sql = "SELECT * FROM " + NotesContract.NoteEntry.TABLE_NAME;
+        String tableName = NotesContract.NoteEntry.TABLE_NAME;
+        String[] columns = {"_id", "heading", "body", "color", "icon", "timestamp"};
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         ArrayList<NoteItem> storeNotes = new ArrayList<>();
-        Cursor cursor = db.rawQuery(sql, null);
+        Cursor cursor = db.query(
+                tableName,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         if (cursor.moveToFirst()){
             do {
                 String id = cursor.getString(0);
@@ -101,5 +111,29 @@ public class NotesDBHelper extends SQLiteOpenHelper {
         else {
             Log.i("Delete state", "deleted");
         }
+    }
+
+    public String getNewestId() {
+        String id = "";
+        SQLiteDatabase db = this.getReadableDatabase();
+        String tableName = NotesContract.NoteEntry.TABLE_NAME;
+        String[] columns = {"MAX(_id)"};
+        Cursor cursor = db.query(
+                tableName,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "1");
+
+        if (cursor.moveToFirst()) {
+            do {
+                id = cursor.getString(0);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return id;
     }
 }

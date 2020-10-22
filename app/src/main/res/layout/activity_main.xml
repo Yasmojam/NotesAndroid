@@ -116,7 +116,9 @@
             android:id="@+id/addButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/button_add"
             android:padding="15dp"
             android:scaleType="fitCenter"
@@ -126,11 +128,41 @@
             android:id="@+id/delButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/button_add"
             android:padding="15dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_delete" />
+
+        <ImageButton
+            android:id="@+id/confirm_delete"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:visibility="gone"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button_add"
+            android:padding="15dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_done" />
+
+        <ImageButton
+            android:id="@+id/cancel_delete"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_add"
+            android:padding="15dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_cancel_note" />
     </LinearLayout>
 
     <View

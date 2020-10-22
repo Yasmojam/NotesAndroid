@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +31,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     private Context context;
     // Filtered list which is shown to user
     private ArrayList<NoteItem> notesList;
+    private ArrayList<NoteItem> notesToBeDeleted;
+    private ArrayList<Integer> positionsToBeReinstated;
     // entire list
     private ArrayList<NoteItem> noteListFull;
     private NotesDBHelper dbHelper;
@@ -43,6 +48,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         this.notesList = notesList;
         noteListFull = new ArrayList<>(notesList);
         dbHelper = new NotesDBHelper(context);
+
+        notesToBeDeleted = new ArrayList<>();
+        positionsToBeReinstated = new ArrayList<>();
     }
 
 
@@ -180,5 +188,23 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
          notifyDataSetChanged();
     }
 
+    public void removeForPreview(int position) {
+         // For canceling the preview
+         notesToBeDeleted.add(notesList.get(position));
+         positionsToBeReinstated.add(position);
+
+         notesList.remove(position);
+         notifyItemRemoved(position);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void cancelPreview() {
+         for (NoteItem noteToBeDel : notesToBeDeleted){
+             notesList.add(noteToBeDel);
+         }
+         Collections.sort(notesList, Collections.<NoteItem>reverseOrder());
+         notifyDataSetChanged();
+         notesToBeDeleted.clear();
+    }
 
 }
