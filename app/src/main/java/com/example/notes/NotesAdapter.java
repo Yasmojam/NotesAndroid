@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class NotesViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout cardContainer;
         public CardView cardView;
         public ImageView choosingDelButton;
         public TextView heading;
@@ -78,6 +80,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         public NotesViewHolder(@NonNull final View itemView, final OnItemCLickListener listener) {
             super(itemView);
 
+            cardContainer = itemView.findViewById(R.id.cardContainer);
             cardView = itemView.findViewById(R.id.cardView);
             choosingDelButton = itemView.findViewById(R.id.chooseDelButton);
 //            imageView = itemView.findViewById(R.id.imageView);
@@ -141,6 +144,20 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
          this.delVisible = delVisible;
      }
 
+    // State for delete mode
+    private static boolean delMode = false;
+
+    public boolean isDelMode() {
+        return delMode;
+    }
+
+    public void setDelMode(boolean delMode) {
+        NotesAdapter.delMode = delMode;
+    }
+
+
+
+
 
 
 
@@ -150,9 +167,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        NoteItem currentItem = notesList.get(position);
+        final NoteItem currentItem = notesList.get(position);
         holder.cardView.setCardBackgroundColor(currentItem.getColor());
-//        holder.imageView.setImageResource(currentItem.getImageResource());
         holder.heading.setText(currentItem.getHeading());
         holder.body.setText(currentItem.getBody());
 
@@ -176,6 +192,31 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             });
         }
 
+        holder.cardContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // CHECK IF SELECTED
+                if (isDelMode()){
+                    currentItem.setSelected(!currentItem.getSelected());
+                    if(currentItem.getSelected()){
+                        holder.cardContainer.setAlpha(0.5f);
+                        Log.i("Opacity", "0.5");
+                    }
+                    else if (!currentItem.getSelected()){
+                        holder.cardContainer.setAlpha(1f);
+                        Log.i("Opacity", "1.0");
+                    }
+
+                }
+            }
+        });
+
+        //  On exiting delete mode recolor these
+        if (!isDelMode()){
+            currentItem.setSelected(false);
+            holder.cardContainer.setAlpha(1f);
+        }
+
     }
 
     @Override
@@ -188,23 +229,24 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
          notifyDataSetChanged();
     }
 
-    public void removeForPreview(int position) {
-         // For canceling the preview
-         notesToBeDeleted.add(notesList.get(position));
-         positionsToBeReinstated.add(position);
-
-         notesList.remove(position);
-         notifyItemRemoved(position);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void cancelPreview() {
-         for (NoteItem noteToBeDel : notesToBeDeleted){
-             notesList.add(noteToBeDel);
-         }
-         Collections.sort(notesList, Collections.<NoteItem>reverseOrder());
-         notifyDataSetChanged();
-         notesToBeDeleted.clear();
-    }
+//    public void removeForPreview(int position) {
+//         // For canceling the preview
+//         notesToBeDeleted.add(notesList.get(position));
+//         positionsToBeReinstated.add(position);
+//
+//
+//         notesList.remove(position);
+//         notifyItemRemoved(position);
+//    }
+//
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public void cancelPreview() {
+//         for (NoteItem noteToBeDel : notesToBeDeleted){
+//             notesList.add(noteToBeDel);
+//         }
+//         Collections.sort(notesList, Collections.<NoteItem>reverseOrder());
+//         notifyDataSetChanged();
+//         notesToBeDeleted.clear();
+//    }
 
 }

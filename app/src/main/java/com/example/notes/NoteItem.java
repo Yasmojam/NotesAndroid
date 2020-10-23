@@ -18,6 +18,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
     private int color = Color.parseColor("#c6d8d3");
     private String icon;
     private String timestamp;
+    private  Boolean selected;
 
     /**
      * Constructor with id
@@ -36,6 +37,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
         this.color = color;
         this.icon = icon;
         this.timestamp = timestamp;
+        this.selected = false;
     }
 
     /**
@@ -53,6 +55,7 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
         this.color = color;
         this.icon = icon;
         this.timestamp = timestamp;
+        this.selected = false;
     }
 
     protected NoteItem(Parcel in) {
@@ -122,6 +125,14 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public void setSelected(boolean bool) {
+        this.selected = bool;
+    }
+
+    public boolean getSelected() {
+        return this.selected;
     }
 
     @Override

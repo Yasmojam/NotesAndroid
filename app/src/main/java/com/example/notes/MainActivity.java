@@ -1,6 +1,7 @@
 package com.example.notes;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -114,18 +117,26 @@ public class MainActivity extends AppCompatActivity {
         confirmDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (NoteItem noteItem : notesToBeDeleted){
-                    removeItem(noteItem);
+                ArrayList<NoteItem> toBeDel = new ArrayList<>();
+                for (NoteItem noteItem : notesList){
+                    if (noteItem.getSelected()) {
+                        toBeDel.add(noteItem);
+                    }
+                }
+                for (NoteItem toBeDelNote : toBeDel){
+                    removeItem(toBeDelNote);
                 }
                 notesToBeDeleted.clear();
-                removeDeleteMode();
+                    removeDeleteMode();
             }
         });
 
         cancelDelete.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 notesToBeDeleted.clear();
+//                recyclerAdapter.cancelPreview();
                 removeDeleteMode();
             }
         });
@@ -168,29 +179,27 @@ public class MainActivity extends AppCompatActivity {
         recyclerAdapter.setOnItemClickListener(new NotesAdapter.OnItemCLickListener() {
             @Override
             public void onDeleteClick(int position) {
-//                ArrayList<NoteItem> notesToBeKept = new ArrayList<>(notesList);
                 notesToBeDeleted.add(notesList.get(position));
-//                notesToBeKept.remove(position);
-//                recyclerAdapter.notifyItemRemoved(position);
-//                recyclerAdapter.filterList(notesToBeKept);
 
-                recyclerAdapter.removeForPreview(position);
+//                recyclerAdapter.removeForPreview(position);
             }
 
             @Override
             public void onClickNote(int position) {
-                // try to change bg of detail card
-                Log.i("clicked", "Note No. " + position  + " clicked");
-                Intent intent = new Intent(MainActivity.this, NoteDetails.class);
-                intent.putExtra("State", "editing");
-                intent.putExtra("Note Item", notesList.get(position));
-                // Use this for changing note on saving.
-                intent.putExtra("Note position", position);
+                // Open details if not deleting
+                if (!recyclerAdapter.isDelMode()) {
+                    // try to change bg of detail card
+                    Log.i("clicked", "Note No. " + position + " clicked");
+                    Intent intent = new Intent(MainActivity.this, NoteDetails.class);
+                    intent.putExtra("State", "editing");
+                    intent.putExtra("Note Item", notesList.get(position));
+                    // Use this for changing note on saving.
+                    intent.putExtra("Note position", position);
 
-                // asks for activity which wishes to start and request code
-                startActivityForResult(intent, 1);
-                dimmer.setVisibility(View.VISIBLE);
-//                startActivity(intent);
+                    // asks for activity which wishes to start and request code
+                    startActivityForResult(intent, 1);
+                    dimmer.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -286,30 +295,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void removeItem(NoteItem noteItem){
-        int notesListPosition = notesList.indexOf(noteItem);
+        int noteItemPosition = notesList.indexOf(noteItem);
         dbHelper.deleteNote(noteItem.getId());
-        // remove from notes list
-//        notesList.remove(notesListPosition);
-        // remove from filterable list
-//        recyclerAdapter.notifyItemRemoved(notesListPosition);
+        notesList.remove(noteItemPosition);
+        recyclerAdapter.notifyItemRemoved(noteItemPosition);
         checkDeleteButton();
     }
 
     public void removeDeleteMode() {
-        addButton.setVisibility(View.VISIBLE);
-        deleteButton.setVisibility(View.VISIBLE);
         confirmDelete.setVisibility(View.GONE);
         cancelDelete.setVisibility(View.GONE);
+        addButton.setVisibility(View.VISIBLE);
+        deleteButton.setVisibility(View.VISIBLE);
 
-        recyclerAdapter.setDelVisible(false);
-        recyclerAdapter.notifyDataSetChanged();
+        // Delay before refreshing dataset for nondel mode
+        (new Handler()).postDelayed(() -> {
+            recyclerAdapter.setDelMode(false);
+
+            recyclerAdapter.setDelVisible(false);
+            recyclerAdapter.notifyDataSetChanged();
+        }, 500);
     }
 
     public void instateDeleteMode() {
-        confirmDelete.setVisibility(View.VISIBLE);
-        cancelDelete.setVisibility(View.VISIBLE);
+        recyclerAdapter.setDelMode(true);
         addButton.setVisibility(View.GONE);
         deleteButton.setVisibility(View.GONE);
+        confirmDelete.setVisibility(View.VISIBLE);
+        cancelDelete.setVisibility(View.VISIBLE);
 
         recyclerAdapter.setDelVisible(true);
         recyclerAdapter.notifyDataSetChanged();

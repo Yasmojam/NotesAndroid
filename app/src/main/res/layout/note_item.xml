@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="start"
     android:animateLayoutChanges="true"
     android:animationCache="true"
-    android:background="@android:color/transparent"
     android:gravity="center"
     android:orientation="vertical"
     tools:layout_editor_absoluteY="326dp">
@@ -37,7 +37,6 @@
         android:minWidth="100dp"
         android:padding="10dp"
         app:cardCornerRadius="15dp">
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
