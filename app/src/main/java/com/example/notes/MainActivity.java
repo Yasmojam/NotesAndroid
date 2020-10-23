@@ -48,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton cancelDelete;
     private ImageButton searchButton;
     private ImageView clearButton;
-    private Boolean isDeleting = false;
-    private Boolean isSearching = false;
-
 
     /**
      *  Possible states:
@@ -126,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
                         toBeDel.add(noteItem);
                     }
                 }
+
+
                 for (NoteItem toBeDelNote : toBeDel){
                     removeItem(toBeDelNote);
                 }
@@ -312,7 +311,6 @@ public class MainActivity extends AppCompatActivity {
         addButton.setVisibility(View.VISIBLE);
         deleteButton.setVisibility(View.VISIBLE);
         recyclerAdapter.setDelMode(false);
-        recyclerAdapter.setDelVisible(false);
 
         // Delay before refreshing dataset for nondel mode
         (new Handler()).postDelayed(() -> {
@@ -328,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
         confirmDelete.setVisibility(View.VISIBLE);
         cancelDelete.setVisibility(View.VISIBLE);
 
-        recyclerAdapter.setDelVisible(true);
         recyclerAdapter.notifyDataSetChanged();
     }
 

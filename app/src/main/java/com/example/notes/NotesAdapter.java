@@ -32,8 +32,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     private Context context;
     // Filtered list which is shown to user
     private ArrayList<NoteItem> notesList;
-    private ArrayList<NoteItem> notesToBeDeleted;
-    private ArrayList<Integer> positionsToBeReinstated;
     // entire list
     private ArrayList<NoteItem> noteListFull;
     private NotesDBHelper dbHelper;
@@ -49,9 +47,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         this.notesList = notesList;
         noteListFull = new ArrayList<>(notesList);
         dbHelper = new NotesDBHelper(context);
-
-        notesToBeDeleted = new ArrayList<>();
-        positionsToBeReinstated = new ArrayList<>();
     }
 
 
@@ -70,7 +65,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public static class NotesViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout cardContainer;
         public CardView cardView;
-        public ImageView choosingDelButton;
         public TextView heading;
         public TextView body;
 
@@ -82,25 +76,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
             cardContainer = itemView.findViewById(R.id.cardContainer);
             cardView = itemView.findViewById(R.id.cardView);
-            choosingDelButton = itemView.findViewById(R.id.chooseDelButton);
 //            imageView = itemView.findViewById(R.id.imageView);
             heading = itemView.findViewById(R.id.headingView);
             body = itemView.findViewById(R.id.bodyView);
             noteDetails = itemView.findViewById(R.id.noteDetailsBg);
-
-
-            // x button click listener
-            choosingDelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onDeleteClick(position);
-                        }
-                    }
-                }
-            });
 
             // item click listener
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -132,18 +111,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         NotesViewHolder nvh = new NotesViewHolder(v, notesListener);
         return nvh;
     }
-
-    // State for delete button
-    private static boolean delVisible = false;
-    // getter
-     public boolean isDelVisible() {
-         return delVisible;
-     }
-     // setter
-     public void setDelVisible(boolean delVisible) {
-         this.delVisible = delVisible;
-     }
-
     // State for delete mode
     private static boolean delMode = false;
 
@@ -159,8 +126,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
 
 
-
-
     // Binds data to item
     @Override
     public void onBindViewHolder(@NonNull final NotesViewHolder holder, int position) {
@@ -170,26 +135,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.cardView.setCardBackgroundColor(currentItem.getColor());
         holder.heading.setText(currentItem.getHeading());
         holder.body.setText(currentItem.getBody());
-
-        // CHECK IF SHOULD DISPLAY X BUTTON
-        if (!isDelVisible()) {
-            holder.choosingDelButton.animate().alpha(0f).setDuration(8).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    holder.choosingDelButton.setVisibility(View.INVISIBLE);
-                }
-            });
-        }
-        else{
-            holder.choosingDelButton.animate().alpha(1.0f).setDuration(8).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    holder.choosingDelButton.setVisibility(View.VISIBLE);
-                }
-            });
-        }
 
         int duration = 130;
         // CHECK IF IN DEL MODE SO NOT TWO ON CLICKS AT ONCE
@@ -243,25 +188,4 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
          notesList = filteredList;
          notifyDataSetChanged();
     }
-
-//    public void removeForPreview(int position) {
-//         // For canceling the preview
-//         notesToBeDeleted.add(notesList.get(position));
-//         positionsToBeReinstated.add(position);
-//
-//
-//         notesList.remove(position);
-//         notifyItemRemoved(position);
-//    }
-//
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    public void cancelPreview() {
-//         for (NoteItem noteToBeDel : notesToBeDeleted){
-//             notesList.add(noteToBeDel);
-//         }
-//         Collections.sort(notesList, Collections.<NoteItem>reverseOrder());
-//         notifyDataSetChanged();
-//         notesToBeDeleted.clear();
-//    }
-
 }

@@ -12,16 +12,6 @@
     android:orientation="vertical"
     tools:layout_editor_absoluteY="326dp">
 
-    <ImageView
-        android:id="@+id/chooseDelButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="right"
-        android:layout_marginBottom="-25dp"
-        android:elevation="15dp"
-        android:visibility="invisible"
-        app:srcCompat="@drawable/ic_cancel" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
