@@ -137,14 +137,6 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <ImageView
-                android:id="@+id/iconToggle"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_android" />
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/toggleColBtn"
                 android:layout_width="40dp"
@@ -165,12 +157,28 @@
             </androidx.cardview.widget.CardView>
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/iconToggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_android" />
+
+            <ImageView
+                android:id="@+id/shareButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_share" />
+
+            <ImageView
+                android:id="@+id/deleteDetail"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_delete" />
 
         </LinearLayout>
 

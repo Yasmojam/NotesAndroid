@@ -51,8 +51,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
 
     public interface OnItemCLickListener {
-        void onDeleteClick(int position);
-
         void onClickNote(int position);
     }
 
@@ -139,26 +137,28 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         int duration = 130;
         // CHECK IF IN DEL MODE SO NOT TWO ON CLICKS AT ONCE
         if (isDelMode()){
-            holder.cardContainer.setOnClickListener(v -> {
+            holder.cardView.setClickable(true);
+            Log.i("DelMode", String.valueOf(isDelMode()));
+            holder.cardView.setOnClickListener(v -> {
                 // CHECK IF SELECTED
                     currentItem.setSelected(!currentItem.getSelected());
                     if(currentItem.getSelected()){
-                        holder.cardContainer.animate().alpha(0.5f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+                        holder.cardView.animate().alpha(0.5f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
                                 Log.i("alpha", "0.5");
-                                holder.cardContainer.setAlpha(0.5f);
+                                holder.cardView.setAlpha(0.5f);
                             }
                         });
                     }
                     else if (!currentItem.getSelected()){
-                        holder.cardContainer.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+                        holder.cardView.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
                                 Log.i("alpha", "1.0");
-                                holder.cardContainer.setAlpha(1.0f);
+                                holder.cardView.setAlpha(1.0f);
                             }
                         });
                     }
@@ -167,12 +167,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         //  On exiting delete mode recolor these
         if (!isDelMode()){
+            holder.cardView.setClickable(false);
             currentItem.setSelected(false);
-            holder.cardContainer.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+            holder.cardView.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    holder.cardContainer.setAlpha(1.0f);
+                    holder.cardView.setAlpha(1.0f);
                 }
             });
         }

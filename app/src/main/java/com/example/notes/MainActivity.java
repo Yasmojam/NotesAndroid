@@ -180,13 +180,6 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerAdapter.setOnItemClickListener(new NotesAdapter.OnItemCLickListener() {
             @Override
-            public void onDeleteClick(int position) {
-                notesToBeDeleted.add(notesList.get(position));
-
-//                recyclerAdapter.removeForPreview(position);
-            }
-
-            @Override
             public void onClickNote(int position) {
                 // Open details if not deleting
                 if (!recyclerAdapter.isDelMode()) {
