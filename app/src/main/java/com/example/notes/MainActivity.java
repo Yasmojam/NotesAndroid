@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private View dimmer;
     private LinearLayout searchContainer;
     private EditText searchBar;
+    private LinearLayout deletePrompt;
     private ImageButton deleteButton;
     private ImageButton addButton;
     private ImageButton confirmDelete;
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.editSearch);
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
+        deletePrompt = findViewById(R.id.delPrompContainer);
 
         checkDeleteButton();
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -303,22 +306,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void removeDeleteMode() {
+        deletePrompt.setVisibility(View.GONE);
         confirmDelete.setVisibility(View.GONE);
         cancelDelete.setVisibility(View.GONE);
         addButton.setVisibility(View.VISIBLE);
         deleteButton.setVisibility(View.VISIBLE);
+        recyclerAdapter.setDelMode(false);
+        recyclerAdapter.setDelVisible(false);
 
         // Delay before refreshing dataset for nondel mode
         (new Handler()).postDelayed(() -> {
-            recyclerAdapter.setDelMode(false);
-
-            recyclerAdapter.setDelVisible(false);
             recyclerAdapter.notifyDataSetChanged();
-        }, 500);
+        }, 130);
     }
 
     public void instateDeleteMode() {
         recyclerAdapter.setDelMode(true);
+        deletePrompt.setVisibility(View.VISIBLE);
         addButton.setVisibility(View.GONE);
         deleteButton.setVisibility(View.GONE);
         confirmDelete.setVisibility(View.VISIBLE);

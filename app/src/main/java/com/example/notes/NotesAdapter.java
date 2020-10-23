@@ -166,7 +166,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public void onBindViewHolder(@NonNull final NotesViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-
         final NoteItem currentItem = notesList.get(position);
         holder.cardView.setCardBackgroundColor(currentItem.getColor());
         holder.heading.setText(currentItem.getHeading());
@@ -192,29 +191,45 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             });
         }
 
-        holder.cardContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        int duration = 130;
+        // CHECK IF IN DEL MODE SO NOT TWO ON CLICKS AT ONCE
+        if (isDelMode()){
+            holder.cardContainer.setOnClickListener(v -> {
                 // CHECK IF SELECTED
-                if (isDelMode()){
                     currentItem.setSelected(!currentItem.getSelected());
                     if(currentItem.getSelected()){
-                        holder.cardContainer.setAlpha(0.5f);
-                        Log.i("Opacity", "0.5");
+                        holder.cardContainer.animate().alpha(0.5f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                Log.i("alpha", "0.5");
+                                holder.cardContainer.setAlpha(0.5f);
+                            }
+                        });
                     }
                     else if (!currentItem.getSelected()){
-                        holder.cardContainer.setAlpha(1f);
-                        Log.i("Opacity", "1.0");
+                        holder.cardContainer.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                Log.i("alpha", "1.0");
+                                holder.cardContainer.setAlpha(1.0f);
+                            }
+                        });
                     }
-
-                }
-            }
-        });
+            });
+        }
 
         //  On exiting delete mode recolor these
         if (!isDelMode()){
             currentItem.setSelected(false);
-            holder.cardContainer.setAlpha(1f);
+            holder.cardContainer.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    holder.cardContainer.setAlpha(1.0f);
+                }
+            });
         }
 
     }
