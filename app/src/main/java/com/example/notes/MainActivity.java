@@ -231,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         // CREATION
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
+                assert data != null;
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
                 int color = data.getIntExtra("Selected color", Color.parseColor("#c6d8d3"));
@@ -306,9 +307,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerAdapter.setDelMode(false);
 
         // Delay before refreshing dataset for nondel mode
-        (new Handler()).postDelayed(() -> {
-            recyclerAdapter.notifyDataSetChanged();
-        }, 130);
+        (new Handler()).postDelayed(() -> recyclerAdapter.notifyDataSetChanged(), 130);
     }
 
     public void instateDeleteMode() {
@@ -332,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
      * Returns true if the notes list is empty
      */
     private boolean isNotesListEmpty(){
-        return notesList.size() < 1 ? true: false;
+        return notesList.size() < 1;
         }
 
     /**

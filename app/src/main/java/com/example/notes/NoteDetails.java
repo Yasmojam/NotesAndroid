@@ -42,9 +42,10 @@ public class NoteDetails extends AppCompatActivity {
     LinearLayout toggleSettings;
 
     LinearLayout colorOptions;
+    LinearLayout iconOptions;
 
     // Coloured dots
-    ArrayList<CardView>  coloredDots= new ArrayList<>();
+    ArrayList<CardView> coloredDots= new ArrayList<>();
     CardView chooseAlmondCol;
     CardView chooseChampagneCol;
     CardView choosePinkCol;
@@ -53,12 +54,24 @@ public class NoteDetails extends AppCompatActivity {
     CardView choosePurpleCol;
     View hightlightCol;
 
+    // Icons
+    ImageView iconToggle;
+    ArrayList<ImageView> iconOptionsList = new ArrayList<>();
+    ImageView chooseAndroid;
+    ImageView chooseBookmark;
+    ImageView chooseDone;
+    ImageView chooseShoppingBasket;
+    ImageView chooseAssignment;
+
+
+
     // Data params
     String icon;
     String heading;
     String body;
     String timestamp;
     int selectedColor;
+    String selectedIcon;
 
     Intent intent;
     String state;
@@ -90,8 +103,10 @@ public class NoteDetails extends AppCompatActivity {
         toggleSettings = findViewById(R.id.toggleSettings);
         toggleCols = findViewById(R.id.toggleColBtn);
         colorOptions = findViewById(R.id.colorOptions);
+        iconOptions = findViewById(R.id.iconOptions);
+        iconToggle = findViewById(R.id.iconToggle);
 
-        // Col
+        // Color
         chooseAlmondCol = findViewById(R.id.chooseAlmondCol);
         chooseChampagneCol = findViewById(R.id.chooseChampagneCol);
         choosePinkCol = findViewById(R.id.choosePinkCol);;
@@ -114,6 +129,19 @@ public class NoteDetails extends AppCompatActivity {
         hightlightCol.setBackground(getResources().getDrawable(R.drawable.togglecolors));
         hightlightCol.setVisibility(View.VISIBLE);
 
+        // Icons
+        chooseAndroid = findViewById(R.id.chooseAndroid);
+        chooseBookmark = findViewById(R.id.chooseBookmark);
+        chooseDone = findViewById(R.id.chooseDone);
+        chooseShoppingBasket = findViewById(R.id.chooseShoppingBasket);
+        chooseAssignment = findViewById(R.id.chooseAssignment);
+        iconOptionsList.add(chooseAndroid);
+        iconOptionsList.add(chooseBookmark);
+        iconOptionsList.add(chooseDone);
+        iconOptionsList.add(chooseShoppingBasket);
+        iconOptionsList.add(chooseAssignment);
+
+
 
         if (state.equals("editing")){
             icon = noteItem.getIcon();
@@ -126,6 +154,8 @@ public class NoteDetails extends AppCompatActivity {
             detailBody.setText(body);
             detailImage.setImageResource(getIconFromString(icon));
             detailBgCard.setCardBackgroundColor(selectedColor);
+
+            iconToggle.setImageResource(getIconFromString(icon));
         }
         // Set it to default if not chosen
         else if (state.equals("creating")){
@@ -212,12 +242,25 @@ public class NoteDetails extends AppCompatActivity {
             }
         });
 
+        iconToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (iconOptions.isShown()){
+                    iconOptions.setVisibility(View.GONE);
+                }
+                else{
+                    iconOptions.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (toggleSettings.isShown()){
                     toggleSettings.setVisibility(View.GONE);
                     colorOptions.setVisibility(View.GONE);
+                    iconOptions.setVisibility(View.GONE);
                 }
                 else{
                     toggleSettings.setVisibility(View.VISIBLE);
@@ -244,6 +287,10 @@ public class NoteDetails extends AppCompatActivity {
                 }
             });
         }
+
+//        for (ImageView imageView : iconOptionsList){
+//            if (imageView.getImageResource())
+//        }
     }
 
     private void setUpPopUp(){

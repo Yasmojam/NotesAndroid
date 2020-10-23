@@ -247,6 +247,56 @@
 
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/iconOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/chooseAndroid"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/ic_android" />
+
+            <ImageView
+                android:id="@+id/chooseBookmark"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/ic_bookmark" />
+
+            <ImageView
+                android:id="@+id/chooseDone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/ic_done" />
+
+            <ImageView
+                android:id="@+id/chooseShoppingBasket"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/ic_shopping_basket" />
+
+            <ImageView
+                android:id="@+id/chooseAssignment"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:srcCompat="@drawable/ic_assignment" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
