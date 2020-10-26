@@ -92,6 +92,7 @@ public class NoteDetails extends AppCompatActivity {
         noteItem = intent.getParcelableExtra("Note Item");
 
         state = intent.getStringExtra("State");
+        notePos = intent.getIntExtra("Note position", -1);
 
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
@@ -181,6 +182,8 @@ public class NoteDetails extends AppCompatActivity {
         setUpPopUp();
         setOnClickListeners();
         generateColorPicker();
+
+        Log.i("Note tapped", String.valueOf(notePos));
     }
 
     private void setOnClickListeners(){
@@ -192,7 +195,6 @@ public class NoteDetails extends AppCompatActivity {
                 timestamp = new Timestamp(System.currentTimeMillis()).toString();
                 if (state.equals("editing")) {
                     // Assign note position
-                    notePos = intent.getIntExtra("Note position", -1);
                     String headingText = detailHeading.getText().toString();
                     String bodyText = detailBody.getText().toString();
 
@@ -241,23 +243,9 @@ public class NoteDetails extends AppCompatActivity {
         deleteDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("Note deleted", String.valueOf(notePos));
                 hideKeyboard(v);
                 openDeleteConfirmation();
-//                new AlertDialog.Builder(NoteDetails.this)
-//                        .setTitle("Title")
-//                        .setMessage("Do you want to delete this note?")
-//                        .setIcon(android.R.drawable.ic_dialog_alert)
-//                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int whichButton) {
-//                                Intent intent = new Intent();
-//                                intent.putExtra("Delete Note", true);
-//                                intent.putExtra("Note position", notePos);
-//                                setResult(RESULT_OK, intent);
-//                                finish();
-//                                Toast.makeText(NoteDetails.this, "Note Deleted", Toast.LENGTH_SHORT).show();
-//                            }})
-//                        .setNegativeButton("Cancel", null).show();
-
             }
         });
 
@@ -509,8 +497,9 @@ public class NoteDetails extends AppCompatActivity {
                 intent.putExtra("Delete Note", true);
                 intent.putExtra("Note position", notePos);
                 setResult(RESULT_OK, intent);
+                builder.dismiss();
                 finish();
-                Toast.makeText(NoteDetails.this, "Note Deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NoteDetails.this, "Note deleted", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -520,7 +509,8 @@ public class NoteDetails extends AppCompatActivity {
                 builder.dismiss();
             }
         });
-        builder.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+
+        builder.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         builder.setView(view);
         builder.show();
     }

@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter recyclerAdapter;
     private GridLayoutManager recyclerLayoutManager;
     ArrayList<NoteItem> notesList;
-
-    ArrayList<NoteItem> notesToBeDeleted;
 
     private View dimmer;
     private LinearLayout searchContainer;
@@ -63,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dimmer = findViewById(R.id.dim);
-
-        notesToBeDeleted = new ArrayList<>();
 
        dbHelper = new NotesDBHelper(this);
         database = dbHelper.getWritableDatabase();
@@ -128,8 +125,17 @@ public class MainActivity extends AppCompatActivity {
                 for (NoteItem toBeDelNote : toBeDel){
                     removeItem(toBeDelNote);
                 }
-                notesToBeDeleted.clear();
-                    removeDeleteMode();
+
+                removeDeleteMode();
+
+                if (toBeDel.size() > 1) {
+                    Toast.makeText(MainActivity.this, "Notes deleted", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
@@ -137,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                notesToBeDeleted.clear();
-//                recyclerAdapter.cancelPreview();
                 removeDeleteMode();
             }
         });
@@ -235,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
             // If choose to delete
             else {
                 int position = data.getIntExtra("Note position", -1);
+                Log.i("Note deleted", String.valueOf(position));
                 removeItem(notesList.get(position));
             }
         }
