@@ -5,12 +5,15 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.animation.LayoutTransition;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -19,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -39,6 +43,7 @@ public class NoteDetails extends AppCompatActivity {
     ConstraintLayout constraintCont;
     CardView toggleCols;
     ImageView settingsButton;
+    ImageView deleteDetail;
     LinearLayout toggleSettings;
 
     LinearLayout colorOptions;
@@ -71,7 +76,7 @@ public class NoteDetails extends AppCompatActivity {
     String body;
     String timestamp;
     int selectedColor;
-    String selectedIcon;
+    ImageView selectedIcon;
 
     Intent intent;
     String state;
@@ -102,6 +107,7 @@ public class NoteDetails extends AppCompatActivity {
         settingsButton = findViewById(R.id.settingsButton);
         toggleSettings = findViewById(R.id.toggleSettings);
         toggleCols = findViewById(R.id.toggleColBtn);
+        deleteDetail = findViewById(R.id.deleteDetail);
         colorOptions = findViewById(R.id.colorOptions);
         iconOptions = findViewById(R.id.iconOptions);
         iconToggle = findViewById(R.id.iconToggle);
@@ -141,6 +147,7 @@ public class NoteDetails extends AppCompatActivity {
         iconOptionsList.add(chooseShoppingBasket);
         iconOptionsList.add(chooseAssignment);
 
+        initialIconSelection();
 
 
         if (state.equals("editing")){
@@ -160,6 +167,7 @@ public class NoteDetails extends AppCompatActivity {
         // Set it to default if not chosen
         else if (state.equals("creating")){
             selectedColor = detailBgCard.getCardBackgroundColor().getDefaultColor();
+            deleteDetail.setVisibility(View.GONE);
         }
 
         // Attach transitions to the note container and the constraint layouts
@@ -193,14 +201,13 @@ public class NoteDetails extends AppCompatActivity {
                     intent.putExtra("Body text", bodyText);
                     // Must convert to hexstring for format to class
                     intent.putExtra("Selected color", selectedColor);
+                    intent.putExtra("Selected Icon", getStringSelectedIcon());
                     intent.putExtra("Timestamp", timestamp);
                     intent.putExtra("Note position", notePos);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
                 else if (state.equals("creating")){
-
-
                     String headingText = detailHeading.getText().toString();
                     String bodyText = detailBody.getText().toString();
 
@@ -209,6 +216,7 @@ public class NoteDetails extends AppCompatActivity {
                     intent.putExtra("Body text", bodyText);
                     // Must convert to hexstring for format to class
                     intent.putExtra("Selected color", selectedColor);
+                    intent.putExtra("Selected Icon", getStringSelectedIcon());
                     intent.putExtra("Timestamp", timestamp);
                     setResult(RESULT_OK, intent);
 
@@ -229,15 +237,40 @@ public class NoteDetails extends AppCompatActivity {
             }
         });
 
+        // Choose to delete this one
+        deleteDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard(v);
+                openDeleteConfirmation();
+//                new AlertDialog.Builder(NoteDetails.this)
+//                        .setTitle("Title")
+//                        .setMessage("Do you want to delete this note?")
+//                        .setIcon(android.R.drawable.ic_dialog_alert)
+//                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int whichButton) {
+//                                Intent intent = new Intent();
+//                                intent.putExtra("Delete Note", true);
+//                                intent.putExtra("Note position", notePos);
+//                                setResult(RESULT_OK, intent);
+//                                finish();
+//                                Toast.makeText(NoteDetails.this, "Note Deleted", Toast.LENGTH_SHORT).show();
+//                            }})
+//                        .setNegativeButton("Cancel", null).show();
+
+            }
+        });
+
         toggleCols.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideKeyboard(v);
+                iconOptions.setVisibility(View.GONE);
                 if (colorOptions.isShown()){
                     colorOptions.setVisibility(View.GONE);
                 }
                 else{
                     colorOptions.setVisibility(View.VISIBLE);
-
                 }
             }
         });
@@ -245,6 +278,8 @@ public class NoteDetails extends AppCompatActivity {
         iconToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideKeyboard(v);
+                colorOptions.setVisibility(View.GONE);
                 if (iconOptions.isShown()){
                     iconOptions.setVisibility(View.GONE);
                 }
@@ -257,6 +292,7 @@ public class NoteDetails extends AppCompatActivity {
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideKeyboard(v);
                 if (toggleSettings.isShown()){
                     toggleSettings.setVisibility(View.GONE);
                     colorOptions.setVisibility(View.GONE);
@@ -288,9 +324,16 @@ public class NoteDetails extends AppCompatActivity {
             });
         }
 
-//        for (ImageView imageView : iconOptionsList){
-//            if (imageView.getImageResource())
-//        }
+        // click listener for icon toggle
+        for (ImageView iconOption : iconOptionsList) {
+            iconOption.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    assignChosenIcon(iconOption);
+                }
+            });
+        }
+
     }
 
     private void setUpPopUp(){
@@ -334,10 +377,87 @@ public class NoteDetails extends AppCompatActivity {
                 return R.drawable.ic_assignment;
             case ("bookmark"):
                 return R.drawable.ic_bookmark;
+            case ("shopping basket"):
+                return  R.drawable.ic_shopping_basket;
+            case ("done"):
+                return R.drawable.ic_done;
             default:
                 return R.drawable.ic_error;
         }
     }
+
+    /**
+     * Reassigns selected Icon and unhighlights the Icon ImageView options and highlights the chosen option.
+     * Change the detail image in notes detail.
+     */
+    public  void assignChosenIcon(ImageView choosenIcon){
+        for (ImageView icon : iconOptionsList) {
+            icon.setAlpha(0.7f);
+        }
+        selectedIcon = choosenIcon;
+        choosenIcon.setAlpha(1.0f);
+        iconToggle.setImageResource(getIconFromString(getStringSelectedIcon()));
+        detailImage.setImageResource(getIconFromString(getStringSelectedIcon()));
+    }
+
+
+    /**
+     * Initiolises the chosen option on loading activity. If new note then default to android.
+     */
+    public void initialIconSelection(){
+        if (state.equals("editing")) {
+            switch (noteItem.getIcon()) {
+                case ("assignment"):
+                    selectedIcon = chooseAssignment;
+                    chooseAssignment.setAlpha(1.0f);
+                    return;
+                case ("bookmark"):
+                    selectedIcon = chooseBookmark;
+                    chooseBookmark.setAlpha(1.0f);
+                    return;
+                case ("shopping basket"):
+                    selectedIcon = chooseShoppingBasket;
+                    chooseShoppingBasket.setAlpha(1.0f);
+                    return;
+                case ("done"):
+                    selectedIcon = chooseDone;
+                    chooseDone.setAlpha(1.0f);
+                    return;
+                default:
+                    selectedIcon = chooseAndroid;
+                    chooseAndroid.setAlpha(1.0f);
+                    return;
+            }
+        }
+        else {
+            selectedIcon = chooseAndroid;
+            chooseAndroid.setAlpha(1.0f);
+        }
+    }
+
+    /**
+     *  Returns string from chosenicon ImageView.
+     */
+    public String getStringSelectedIcon(){
+        String icon = "android";
+        if (selectedIcon.equals(chooseAndroid)){
+            icon =  "android";
+        }
+        if (selectedIcon.equals(chooseAssignment)){
+            icon =  "assignment";
+        }
+        if (selectedIcon.equals(chooseBookmark)){
+            icon =  "bookmark";
+        }
+        if (selectedIcon.equals(chooseShoppingBasket)){
+            icon =  "shopping basket";
+        }
+        if (selectedIcon.equals(chooseDone)){
+            icon =  "done";
+        }
+        return icon;
+    }
+
 
     /*Hides keyboard*/
     private void hideKeyboard(View view) {
@@ -373,5 +493,35 @@ public class NoteDetails extends AppCompatActivity {
         }
         // If the for loop returns nothing just return default.
         return chooseOpalCol;
+    }
+
+    public void openDeleteConfirmation() {
+        AlertDialog builder = new AlertDialog.Builder(NoteDetails.this).create();
+        LayoutInflater inflater = NoteDetails.this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.delete_comfirmation, null);
+        ImageButton confirmDialogue = view.findViewById(R.id.confirm_dialogue);
+        ImageButton cancelDialogue = view.findViewById(R.id.cancel_dialogue);
+
+        confirmDialogue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra("Delete Note", true);
+                intent.putExtra("Note position", notePos);
+                setResult(RESULT_OK, intent);
+                finish();
+                Toast.makeText(NoteDetails.this, "Note Deleted", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        cancelDialogue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.dismiss();
+            }
+        });
+        builder.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        builder.setView(view);
+        builder.show();
     }
 }

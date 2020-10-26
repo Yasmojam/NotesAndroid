@@ -206,26 +206,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1){
-            // EDITING
-            if (resultCode == RESULT_OK) {
-                String headingText = data.getStringExtra("Heading text");
-                String bodyText = data.getStringExtra("Body text");
-                String timestamp = data.getStringExtra("Timestamp");
-                int color = data.getIntExtra("Selected color", Color.parseColor("#c6d8d3"));
-                int position = data.getIntExtra("Note position", -1); // if nothing returned then -1
+            boolean deleteThisNote = data.getBooleanExtra("Delete Note", false);
+            if (!deleteThisNote) {
+                // EDITING
+                if (resultCode == RESULT_OK) {
+                    String headingText = data.getStringExtra("Heading text");
+                    String bodyText = data.getStringExtra("Body text");
+                    String icon = data.getStringExtra("Selected Icon");
+                    String timestamp = data.getStringExtra("Timestamp");
+                    int color = data.getIntExtra("Selected color", Color.parseColor("#c6d8d3"));
+                    int position = data.getIntExtra("Note position", -1); // if nothing returned then -1
 
-                NoteItem changingNoteItem = notesList.get(position);
-                changingNoteItem.setHeading(headingText);
-                changingNoteItem.setBody(bodyText);
-                changingNoteItem.setColor(color);
-                changingNoteItem.setTimestamp(timestamp);
+                    NoteItem changingNoteItem = notesList.get(position);
+                    changingNoteItem.setHeading(headingText);
+                    changingNoteItem.setBody(bodyText);
+                    changingNoteItem.setIcon(icon);
+                    changingNoteItem.setColor(color);
+                    changingNoteItem.setTimestamp(timestamp);
 
-                // Reorder notes for the recyclerview
-                sortNotesDescDate();
-                dbHelper.updateNote(changingNoteItem);
-                // Tell view that item has moved from old position to new position
-                recyclerAdapter.notifyItemChanged(position);
-                recyclerAdapter.notifyItemMoved(position, 0);
+                    // Reorder notes for the recyclerview
+                    sortNotesDescDate();
+                    dbHelper.updateNote(changingNoteItem);
+                    // Tell view that item has moved from old position to new position
+                    recyclerAdapter.notifyItemChanged(position);
+                    recyclerAdapter.notifyItemMoved(position, 0);
+                }
+            }
+            // If choose to delete
+            else {
+                int position = data.getIntExtra("Note position", -1);
+                removeItem(notesList.get(position));
             }
         }
         // CREATION
@@ -234,11 +244,12 @@ public class MainActivity extends AppCompatActivity {
                 assert data != null;
                 String headingText = data.getStringExtra("Heading text");
                 String bodyText = data.getStringExtra("Body text");
+                String icon = data.getStringExtra("Selected Icon");
                 int color = data.getIntExtra("Selected color", Color.parseColor("#c6d8d3"));
                 String timestamp = data.getStringExtra("Timestamp");
                 // Default to this icon for now
 //                String color = "#C6D8D3";
-                String icon = "android";
+//                String icon = "android";
 
                 // if the note is completely empty then stop process
                 if (headingText.trim().length() == 0 && bodyText.trim().length() == 0){

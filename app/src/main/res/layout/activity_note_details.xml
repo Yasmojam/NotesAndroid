@@ -156,6 +156,72 @@
                     android:foregroundGravity="center" />
             </androidx.cardview.widget.CardView>
 
+            <LinearLayout
+                android:id="@+id/colorOptions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/chooseAlmondCol"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    app:cardBackgroundColor="@color/colorAlmond"
+                    app:cardCornerRadius="30dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/chooseChampagneCol"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    app:cardBackgroundColor="@color/colorChampagne"
+                    app:cardCornerRadius="30dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/choosePinkCol"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    app:cardBackgroundColor="@color/colorPink"
+                    app:cardCornerRadius="30dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/chooseBlueCol"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    app:cardBackgroundColor="@color/colorBlue"
+                    app:cardCornerRadius="30dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/chooseOpalCol"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    app:cardBackgroundColor="@color/colorOpal"
+                    app:cardCornerRadius="30dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/choosePurpleCol"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    app:cardBackgroundColor="@color/colorPurple"
+                    app:cardCornerRadius="30dp" />
+
+
+            </LinearLayout>
+
             <ImageView
                 android:id="@+id/iconToggle"
                 android:layout_width="40dp"
@@ -163,6 +229,61 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_android" />
+
+            <LinearLayout
+                android:id="@+id/iconOptions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/chooseAndroid"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:alpha="0.7"
+                    app:srcCompat="@drawable/ic_android" />
+
+                <ImageView
+                    android:id="@+id/chooseBookmark"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:alpha="0.7"
+                    app:srcCompat="@drawable/ic_bookmark" />
+
+                <ImageView
+                    android:id="@+id/chooseDone"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:alpha="0.7"
+                    app:srcCompat="@drawable/ic_done" />
+
+                <ImageView
+                    android:id="@+id/chooseShoppingBasket"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:alpha="0.7"
+                    app:srcCompat="@drawable/ic_shopping_basket" />
+
+                <ImageView
+                    android:id="@+id/chooseAssignment"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:alpha="0.7"
+                    app:srcCompat="@drawable/ic_assignment" />
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/shareButton"
@@ -182,121 +303,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/colorOptions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/chooseAlmondCol"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:cardBackgroundColor="@color/colorAlmond"
-                app:cardCornerRadius="30dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/chooseChampagneCol"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:cardBackgroundColor="@color/colorChampagne"
-                app:cardCornerRadius="30dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/choosePinkCol"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:cardBackgroundColor="@color/colorPink"
-                app:cardCornerRadius="30dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/chooseBlueCol"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:cardBackgroundColor="@color/colorBlue"
-                app:cardCornerRadius="30dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/chooseOpalCol"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:cardBackgroundColor="@color/colorOpal"
-                app:cardCornerRadius="30dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/choosePurpleCol"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:cardBackgroundColor="@color/colorPurple"
-                app:cardCornerRadius="30dp" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/iconOptions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/chooseAndroid"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:srcCompat="@drawable/ic_android" />
-
-            <ImageView
-                android:id="@+id/chooseBookmark"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:srcCompat="@drawable/ic_bookmark" />
-
-            <ImageView
-                android:id="@+id/chooseDone"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:srcCompat="@drawable/ic_done" />
-
-            <ImageView
-                android:id="@+id/chooseShoppingBasket"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:srcCompat="@drawable/ic_shopping_basket" />
-
-            <ImageView
-                android:id="@+id/chooseAssignment"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:srcCompat="@drawable/ic_assignment" />
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
