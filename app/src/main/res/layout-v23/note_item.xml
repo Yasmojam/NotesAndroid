@@ -60,7 +60,7 @@
                     android:maxLength="24"
                     android:maxLines="1"
                     android:minLines="1"
-                    android:text="@string/heading"
+                    android:text="Heading"
                     android:textColor="@color/textColorPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -77,7 +77,7 @@
                     android:hyphenationFrequency="normal"
                     android:maxLines="5"
                     android:minLines="5"
-                    android:text="@string/body"
+                    android:text="Body"
                     android:textColor="#B332292F"
                     android:textSize="15sp"
                     android:textStyle="bold" />

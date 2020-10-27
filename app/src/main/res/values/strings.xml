@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">Notes</string>
+    <string name="app_name">Notes.</string>
+    <string name="search">Search</string>
+    <string name="delete_prompt">Select notes to be deleted.</string>
+    <string name="title">Title</string>
+    <string name="body">Body</string>
+    <string name="deleteConfirmation">Are you sure you\'d like to delete this note?</string>
+    <string name="heading">Heading</string>
+    <string name="body">Body</string>
 </resources>
