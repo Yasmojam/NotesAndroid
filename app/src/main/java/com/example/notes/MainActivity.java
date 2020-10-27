@@ -312,6 +312,12 @@ public class MainActivity extends AppCompatActivity {
         notesList.remove(noteItemPosition);
         recyclerAdapter.notifyItemRemoved(noteItemPosition);
         checkDeleteButton();
+
+        // Update the search filter if searching
+        String s = searchBar.getText().toString();
+        if (s.length() > 0){
+            filter(s);
+        }
     }
 
     public void removeDeleteMode() {

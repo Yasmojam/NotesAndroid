@@ -33,8 +33,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     // Filtered list which is shown to user
     private ArrayList<NoteItem> notesList;
     // entire list
-    private ArrayList<NoteItem> noteListFull;
-    private NotesDBHelper dbHelper;
     private OnItemCLickListener notesListener;
 
 
@@ -45,8 +43,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public NotesAdapter(Context context, ArrayList<NoteItem> notesList) {
         this.context = context;
         this.notesList = notesList;
-        noteListFull = new ArrayList<>(notesList);
-        dbHelper = new NotesDBHelper(context);
     }
 
 
