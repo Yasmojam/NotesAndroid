@@ -1,5 +1,6 @@
 package com.example.notes;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -45,7 +46,7 @@ public class NoteDetails extends AppCompatActivity {
     ImageView settingsButton;
     ImageView deleteDetail;
     LinearLayout toggleSettings;
-
+    ImageView shareButton;
     LinearLayout colorOptions;
     LinearLayout iconOptions;
 
@@ -107,6 +108,7 @@ public class NoteDetails extends AppCompatActivity {
 
         settingsButton = findViewById(R.id.settingsButton);
         toggleSettings = findViewById(R.id.toggleSettings);
+        shareButton = findViewById(R.id.shareButton);
         toggleCols = findViewById(R.id.toggleColBtn);
         deleteDetail = findViewById(R.id.deleteDetail);
         colorOptions = findViewById(R.id.colorOptions);
@@ -169,6 +171,7 @@ public class NoteDetails extends AppCompatActivity {
         else if (state.equals("creating")){
             selectedColor = detailBgCard.getCardBackgroundColor().getDefaultColor();
             deleteDetail.setVisibility(View.GONE);
+            shareButton.setVisibility(View.GONE);
         }
 
         // Attach transitions to the note container and the constraint layouts
@@ -321,6 +324,25 @@ public class NoteDetails extends AppCompatActivity {
                 }
             });
         }
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String subjectText = detailHeading.getText().toString().trim();
+                String bodyText = detailBody.getText().toString().trim();
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, subjectText);
+                sendIntent.putExtra(Intent.EXTRA_TITLE, subjectText);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, bodyText);
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+
+            }
+        });
 
     }
 
