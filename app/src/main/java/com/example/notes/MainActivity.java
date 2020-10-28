@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton cancelDelete;
     private ImageButton searchButton;
     private ImageView clearButton;
+    private TextView firstNotePrompt;
 
     /**
      *  Possible states:
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         buildRecyclerView();
         setButtonsEditText();
+        checkFirstNotePrompt();
 
     }
 
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
         deletePrompt = findViewById(R.id.delPrompContainer);
+        firstNotePrompt = findViewById(R.id.firstNotePrompt);
 
         checkDeleteButton();
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -271,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 // notify adapter that a new addition at end of list which is length
                 recyclerAdapter.notifyItemInserted(0);
                 checkDeleteButton();
+                checkFirstNotePrompt();
             }
         }
         // get rid of dimmer
@@ -312,6 +316,7 @@ public class MainActivity extends AppCompatActivity {
         notesList.remove(noteItemPosition);
         recyclerAdapter.notifyItemRemoved(noteItemPosition);
         checkDeleteButton();
+        checkFirstNotePrompt();
 
         // Update the search filter if searching
         String s = searchBar.getText().toString();
@@ -365,6 +370,18 @@ public class MainActivity extends AppCompatActivity {
             addButton.setVisibility(View.VISIBLE);
         } else {
             deleteButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Prompt the user to make notes if there are no notes in list of note items.
+     */
+    private void checkFirstNotePrompt() {
+        if (notesList.size() < 1) {
+            firstNotePrompt.setVisibility(View.VISIBLE);
+        }
+        else {
+            firstNotePrompt.setVisibility(View.GONE);
         }
     }
 
