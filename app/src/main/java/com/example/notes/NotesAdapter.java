@@ -3,6 +3,7 @@ package com.example.notes;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,7 +58,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         public CardView cardView;
         public TextView heading;
         public TextView body;
-
+        public TextView timeStampView;
         public CardView noteDetails;
 
 
@@ -62,6 +70,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 //            imageView = itemView.findViewById(R.id.imageView);
             heading = itemView.findViewById(R.id.headingView);
             body = itemView.findViewById(R.id.bodyView);
+            timeStampView = itemView.findViewById(R.id.timeStampView);
             noteDetails = itemView.findViewById(R.id.noteDetailsBg);
 
             // item click listener
@@ -110,6 +119,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
 
     // Binds data to item
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull final NotesViewHolder holder, int position) {
         // - get element from your dataset at this position
@@ -118,6 +128,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.cardView.setCardBackgroundColor(currentItem.getColor());
         holder.heading.setText(currentItem.getHeading());
         holder.body.setText(currentItem.getBody());
+        holder.timeStampView.setText(getHumanReadableDate(currentItem.getTimestamp()));
+
 
         int duration = 130;
         // CHECK IF IN DEL MODE SO NOT TWO ON CLICKS AT ONCE
@@ -126,27 +138,27 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             Log.i("DelMode", String.valueOf(isDelMode()));
             holder.cardView.setOnClickListener(v -> {
                 // CHECK IF SELECTED
-                    currentItem.setSelected(!currentItem.getSelected());
-                    if(currentItem.getSelected()){
-                        holder.cardView.animate().alpha(0.5f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                Log.i("alpha", "0.5");
-                                holder.cardView.setAlpha(0.5f);
-                            }
-                        });
-                    }
-                    else if (!currentItem.getSelected()){
-                        holder.cardView.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                Log.i("alpha", "1.0");
-                                holder.cardView.setAlpha(1.0f);
-                            }
-                        });
-                    }
+                currentItem.setSelected(!currentItem.getSelected());
+                if(currentItem.getSelected()){
+                    holder.cardView.animate().alpha(0.5f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            Log.i("alpha", "0.5");
+                            holder.cardView.setAlpha(0.5f);
+                        }
+                    });
+                }
+                else if (!currentItem.getSelected()){
+                    holder.cardView.animate().alpha(1.0f).setDuration(duration).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            Log.i("alpha", "1.0");
+                            holder.cardView.setAlpha(1.0f);
+                        }
+                    });
+                }
             });
         }
 
@@ -171,7 +183,18 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     }
 
     public void filterList(ArrayList<NoteItem> filteredList) {
-         notesList = filteredList;
-         notifyDataSetChanged();
+        notesList = filteredList;
+        notifyDataSetChanged();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String getHumanReadableDate(String timestamp){
+        Instant time = Timestamp.valueOf(timestamp).toInstant();
+//        DateTimeFormatter myDateFormatter = DateTimeFormatter.ofPattern("E, dd MMM yyyy HH:mm");
+        DateTimeFormatter myDateFormatter =  DateTimeFormatter.ofPattern("E, dd MMM yyyy HH:mm")
+                .withLocale( Locale.UK )
+                .withZone( ZoneId.systemDefault() );
+        String output = myDateFormatter.format(time);
+        return output;
     }
 }

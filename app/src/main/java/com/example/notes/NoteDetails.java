@@ -1,6 +1,7 @@
 package com.example.notes;
 
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -10,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -26,6 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class NoteDetails extends AppCompatActivity {
@@ -536,4 +540,6 @@ public class NoteDetails extends AppCompatActivity {
         builder.setView(view);
         builder.show();
     }
+
+
 }

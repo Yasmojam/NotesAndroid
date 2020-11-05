@@ -16,28 +16,28 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="5dp"
+        android:layout_margin="8dp"
         android:layout_weight="1"
         android:animateLayoutChanges="true"
         android:minWidth="100dp"
         android:padding="10dp"
+        app:cardBackgroundColor="#00BCD4"
         app:cardCornerRadius="15dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:animateLayoutChanges="true"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -47,18 +47,25 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <ImageView
+                    android:id="@+id/itemIcon"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:foregroundGravity="center"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_assignment" />
+
                 <TextView
                     android:id="@+id/headingView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="4dp"
-                    android:layout_weight="3"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif-light"
                     android:hyphenationFrequency="normal"
                     android:maxLength="24"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:minLines="1"
                     android:text="@string/heading"
                     android:textColor="@color/textColorPrimary"
@@ -71,7 +78,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="4dp"
-                    android:layout_weight="1"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif-thin"
                     android:hyphenationFrequency="normal"
@@ -80,6 +86,17 @@
                     android:text="@string/body"
                     android:textColor="#B332292F"
                     android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timeStampView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-thin"
+                    android:hyphenationFrequency="normal"
+                    android:text="Wed, 01 Jan 2020 10:00"
+                    android:textColor="#8032292F"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
