@@ -259,22 +259,20 @@ public class MainActivity extends AppCompatActivity {
 //                String color = "#C6D8D3";
 //                String icon = "android";
 
-                // if the note is completely empty then stop process
-                if (headingText.trim().length() == 0 && bodyText.trim().length() == 0){
-                    return;
+                // if the note is has one field not empty then create note
+                if (headingText.trim().length() > 0 || bodyText.trim().length() > 0){
+                    NoteItem newNote =  new NoteItem(headingText, bodyText, color, icon, timestamp);
+                    Log.i("New Note", newNote.getBody());
+                    notesList.add(newNote);
+                    sortNotesDescDate();
+                    dbHelper.addNote(newNote);
+                    // Assign note id from database insertion autoincrementation
+                    newNote.setId(dbHelper.getNewestId());
+                    // notify adapter that a new addition at end of list which is length
+                    recyclerAdapter.notifyItemInserted(0);
+                    checkDeleteButton();
+                    checkFirstNotePrompt();
                 }
-
-                NoteItem newNote =  new NoteItem(headingText, bodyText, color, icon, timestamp);
-                Log.i("New Note", newNote.getBody());
-                notesList.add(newNote);
-                sortNotesDescDate();
-                dbHelper.addNote(newNote);
-                // Assign note id from database insertion autoincrementation
-                newNote.setId(dbHelper.getNewestId());
-                // notify adapter that a new addition at end of list which is length
-                recyclerAdapter.notifyItemInserted(0);
-                checkDeleteButton();
-                checkFirstNotePrompt();
             }
         }
         // get rid of dimmer

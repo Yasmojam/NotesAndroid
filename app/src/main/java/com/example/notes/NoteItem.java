@@ -164,4 +164,24 @@ public class NoteItem implements Parcelable, Comparable<NoteItem> {
         return thisTimestamp.compareTo(comparingTimestamp);
     }
 
+    /**
+     * Method which returns an icon int from the associated string name.
+     * @param icon
+     */
+    public int getIconFromString(String icon) {
+        switch (icon) {
+            case ("android"):
+                return R.drawable.ic_android;
+            case ("assignment"):
+                return R.drawable.ic_assignment;
+            case ("bookmark"):
+                return R.drawable.ic_bookmark;
+            case ("shopping basket"):
+                return  R.drawable.ic_shopping_basket;
+            case ("done"):
+                return R.drawable.ic_done;
+            default:
+                return R.drawable.ic_error;
+        }
+    }
 }

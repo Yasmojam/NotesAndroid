@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -56,6 +57,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public static class NotesViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout cardContainer;
         public CardView cardView;
+        public ImageView itemIcon;
         public TextView heading;
         public TextView body;
         public TextView timeStampView;
@@ -67,7 +69,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
             cardContainer = itemView.findViewById(R.id.cardContainer);
             cardView = itemView.findViewById(R.id.cardView);
-//            imageView = itemView.findViewById(R.id.imageView);
+            itemIcon = itemView.findViewById(R.id.itemIcon);
             heading = itemView.findViewById(R.id.headingView);
             body = itemView.findViewById(R.id.bodyView);
             timeStampView = itemView.findViewById(R.id.timeStampView);
@@ -126,6 +128,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         // - replace the contents of the view with that element
         final NoteItem currentItem = notesList.get(position);
         holder.cardView.setCardBackgroundColor(currentItem.getColor());
+        holder.itemIcon.setImageResource(currentItem.getIconFromString(currentItem.getIcon()));
         holder.heading.setText(currentItem.getHeading());
         holder.body.setText(currentItem.getBody());
         holder.timeStampView.setText(getHumanReadableDate(currentItem.getTimestamp()));

@@ -1,17 +1,13 @@
 package com.example.notes;
 
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.animation.LayoutTransition;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,8 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class NoteDetails extends AppCompatActivity {
@@ -166,10 +160,10 @@ public class NoteDetails extends AppCompatActivity {
 
             detailHeading.setText(heading);
             detailBody.setText(body);
-            detailImage.setImageResource(getIconFromString(icon));
+            detailImage.setImageResource(noteItem.getIconFromString(icon));
             detailBgCard.setCardBackgroundColor(selectedColor);
 
-            iconToggle.setImageResource(getIconFromString(icon));
+            iconToggle.setImageResource(noteItem.getIconFromString(icon));
         }
         // Set it to default if not chosen
         else if (state.equals("creating")){
@@ -381,7 +375,23 @@ public class NoteDetails extends AppCompatActivity {
 
 
     /**
+     * Reassigns selected Icon and unhighlights the Icon ImageView options and highlights the chosen option.
+     * Change the detail image in notes detail.
+     */
+    public  void assignChosenIcon(ImageView choosenIcon){
+        for (ImageView icon : iconOptionsList) {
+            icon.setAlpha(0.7f);
+        }
+        selectedIcon = choosenIcon;
+        choosenIcon.setAlpha(1.0f);
+        iconToggle.setImageResource(getIconFromString(getStringSelectedIcon()));
+        detailImage.setImageResource(getIconFromString(getStringSelectedIcon()));
+    }
+
+
+    /**
      * Method which returns an icon int from the associated string name.
+     * @param icon
      */
     public int getIconFromString(String icon) {
         switch (icon) {
@@ -399,21 +409,6 @@ public class NoteDetails extends AppCompatActivity {
                 return R.drawable.ic_error;
         }
     }
-
-    /**
-     * Reassigns selected Icon and unhighlights the Icon ImageView options and highlights the chosen option.
-     * Change the detail image in notes detail.
-     */
-    public  void assignChosenIcon(ImageView choosenIcon){
-        for (ImageView icon : iconOptionsList) {
-            icon.setAlpha(0.7f);
-        }
-        selectedIcon = choosenIcon;
-        choosenIcon.setAlpha(1.0f);
-        iconToggle.setImageResource(getIconFromString(getStringSelectedIcon()));
-        detailImage.setImageResource(getIconFromString(getStringSelectedIcon()));
-    }
-
 
     /**
      * Initiolises the chosen option on loading activity. If new note then default to android.
